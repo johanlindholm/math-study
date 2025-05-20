@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "jest"],
+    "esModuleInterop": true,
+    "target": "es6"
+  },
+  "include": [
+    "features/**/*.ts",
+    "features/**/*.tsx"
+  ]
+}
