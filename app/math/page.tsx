@@ -23,6 +23,13 @@ export default function MathPage() {
             description: 'Practice your addition skills!',
             bgColor: 'bg-blue-500',
             hoverBgColor: 'hover:bg-blue-600'
+        },
+        {
+            type: GameType.SUBTRACTION,
+            title: 'Subtraction',
+            description: 'Practice your subtraction skills!',
+            bgColor: 'bg-green-500',
+            hoverBgColor: 'hover:bg-green-600'
         }
     ];
 
