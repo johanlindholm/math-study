@@ -13,6 +13,31 @@ jest.mock('next/router', () => ({
   }),
 }));
 
+// Mock Next.js App Router navigation
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+    refresh: jest.fn(),
+    prefetch: jest.fn(),
+  }),
+  useSearchParams: () => ({
+    get: jest.fn().mockImplementation(key => {
+      if (key === 'type') return 'multiplication';
+      return null;
+    }),
+    getAll: jest.fn(),
+    has: jest.fn(),
+    entries: jest.fn(),
+    keys: jest.fn(),
+    values: jest.fn(),
+    toString: jest.fn(),
+  }),
+  usePathname: () => '/',
+}));
+
 // Mock next/dynamic to avoid issues with dynamic imports
 jest.mock('next/dynamic', () => ({
   __esModule: true,

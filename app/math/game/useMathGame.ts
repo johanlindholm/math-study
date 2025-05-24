@@ -48,7 +48,7 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
 
     // Shuffle the answers
     return answers.sort(() => Math.random() - 0.5);
-  }, [score, generateIncorrectResult]);
+  }, [score, generateIncorrectResult, config]);
 
   const generateNewProblem = useCallback(() => {
     let num1 = Math.floor(Math.random() * 10) + 1;
