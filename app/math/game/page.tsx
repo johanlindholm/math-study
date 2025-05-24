@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AnswerButtons from '../components/AnswerButtons';
@@ -89,56 +89,58 @@ export default function GamePage() {
   }, [onIncorrectAnswer, router]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <style jsx global>{shakeAnimation}</style>
-      {showConfetti && (
-        <Confetti 
-          key={confettiKey}
-          width={typeof window !== 'undefined' ? window.innerWidth : 0}
-          height={typeof window !== 'undefined' ? window.innerHeight : 0}
-          recycle={false}
-          numberOfPieces={200}
-          confettiSource={{
-            x: confettiPosition.x,
-            y: confettiPosition.y,
-            w: 0,
-            h: 0
-          }}
-          initialVelocityY={20}
-          gravity={0.5}
-          tweenDuration={100}
-        />
-      )}
-      <div className="absolute top-8 right-8 text-4xl font-bold">
-        Score: {score}
-      </div>
-      <div className="w-full max-w-xl px-4 mb-8">
-        <div className="w-full bg-gray-200 rounded-full h-4">
-          <div 
-            className="bg-purple-500 h-4 rounded-full transition-all duration-100 ease-linear"
-            style={{ width: `${(timeLeft / 10) * 100}%` }}
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading game...</div>}>
+      <div className="flex flex-col items-center justify-center h-screen">
+        <style jsx global>{shakeAnimation}</style>
+        {showConfetti && (
+          <Confetti 
+            key={confettiKey}
+            width={typeof window !== 'undefined' ? window.innerWidth : 0}
+            height={typeof window !== 'undefined' ? window.innerHeight : 0}
+            recycle={false}
+            numberOfPieces={200}
+            confettiSource={{
+              x: confettiPosition.x,
+              y: confettiPosition.y,
+              w: 0,
+              h: 0
+            }}
+            initialVelocityY={20}
+            gravity={0.5}
+            tweenDuration={100}
           />
+        )}
+        <div className="absolute top-8 right-8 text-4xl font-bold">
+          Score: {score}
+        </div>
+        <div className="w-full max-w-xl px-4 mb-8">
+          <div className="w-full bg-gray-200 rounded-full h-4">
+            <div 
+              className="bg-purple-500 h-4 rounded-full transition-all duration-100 ease-linear"
+              style={{ width: `${(timeLeft / 10) * 100}%` }}
+            />
+          </div>
+        </div>
+        <h1 className="text-4xl font-bold mb-4">{GAME_TITLES[gameType]} Game</h1>
+        <p className={`mb-4 transition-opacity duration-300 ${isBlinking ? 'opacity-0' : 'opacity-100'} text-4xl`}>
+          {numberOne} {symbol} {numberTwo}
+        </p>
+        <div className="flex flex-col gap-4 items-center">
+          <AnswerButtons 
+            answers={answers}
+            onCorrectAnswer={handleCorrectAnswer}
+            onIncorrectAnswer={handleIncorrectAnswer}
+            isBlinking={isBlinking}
+            isShaking={isShaking}
+          />
+          <button 
+            className="m-2 p-4 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer text-2xl w-64"
+            onClick={() => router.push('/math')}
+          >
+            End Game
+          </button>
         </div>
       </div>
-      <h1 className="text-4xl font-bold mb-4">{GAME_TITLES[gameType]} Game</h1>
-      <p className={`mb-4 transition-opacity duration-300 ${isBlinking ? 'opacity-0' : 'opacity-100'} text-4xl`}>
-        {numberOne} {symbol} {numberTwo}
-      </p>
-      <div className="flex flex-col gap-4 items-center">
-        <AnswerButtons 
-          answers={answers}
-          onCorrectAnswer={handleCorrectAnswer}
-          onIncorrectAnswer={handleIncorrectAnswer}
-          isBlinking={isBlinking}
-          isShaking={isShaking}
-        />
-        <button 
-          className="m-2 p-4 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer text-2xl w-64"
-          onClick={() => router.push('/math')}
-        >
-          End Game
-        </button>
-      </div>
-    </div>
+    </Suspense>
   );
 }
