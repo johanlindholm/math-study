@@ -11,11 +11,20 @@
     "test:watch": "jest --watch",
     "test:cucumber": "cross-env TS_NODE_PROJECT=./tsconfig.test.json cucumber-js",
     "test:cucumber:pretty": "cross-env TS_NODE_PROJECT=./tsconfig.test.json cucumber-js --format @cucumber/pretty-formatter",
-    "test:cucumber:windows": "cucumber-js"
+    "test:cucumber:windows": "cucumber-js",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.9.1",
+    "@prisma/client": "^6.8.2",
+    "@prisma/extension-accelerate": "^2.0.0",
+    "bcryptjs": "^3.0.2",
     "expect.js": "^0.3.1",
     "next": "15.3.2",
+    "next-auth": "^4.24.11",
+    "prisma": "^6.8.2",
     "react": "^19.0.0",
     "react-confetti": "^6.4.0",
     "react-dom": "^19.0.0"
@@ -26,6 +35,7 @@
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
+    "@types/bcryptjs": "^2.4.6",
     "@types/jest": "^29.5.14",
     "@types/node": "^20",
     "@types/react": "^19",
