@@ -22,6 +22,7 @@ const shakeAnimation = `
 const GAME_TITLES = {
   [GameType.MULTIPLICATION]: 'Multiplication',
   [GameType.ADDITION]: 'Addition',
+  [GameType.SUBTRACTION]: 'Subtraction',
 };
 
 export default function GamePage() {

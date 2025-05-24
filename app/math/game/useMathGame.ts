@@ -51,8 +51,14 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
   }, [score, generateIncorrectResult]);
 
   const generateNewProblem = useCallback(() => {
-    const num1 = Math.floor(Math.random() * 10) + 1;
-    const num2 = Math.floor(Math.random() * 10) + 1;
+    let num1 = Math.floor(Math.random() * 10) + 1;
+    let num2 = Math.floor(Math.random() * 10) + 1;
+    
+    // For subtraction, ensure num1 >= num2 to always have positive results
+    if (gameType === GameType.SUBTRACTION && num1 < num2) {
+      [num1, num2] = [num2, num1]; // Swap numbers
+    }
+    
     setNumberOne(num1);
     setNumberTwo(num2);
     setResult(config.operation(num1, num2));
@@ -60,7 +66,7 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
     setTimeLeft(10);
     setIsBlinking(true);
     setTimeout(() => setIsBlinking(false), 300);
-  }, [generateAnswers, config]);
+  }, [generateAnswers, config, gameType]);
 
   const handleCorrectAnswer = useCallback(() => {
     setScore(prev => prev + 1);

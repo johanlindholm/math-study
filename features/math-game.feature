@@ -6,6 +6,7 @@ Feature: Math Game
     Game Types:
     - Multiplication
     - Addition
+    - Subtraction
 
 Scenario: User can view available game modes
     Given the user is on the math games page
@@ -13,6 +14,7 @@ Scenario: User can view available game modes
         | Mode         | Description                       |
         | Multiplication | Practice your multiplication skills |
         | Addition      | Practice your addition skills      |
+        | Subtraction   | Practice your subtraction skills   |
 
 Scenario: User can start a multiplication game
     Given the user is on the math games page
@@ -25,6 +27,12 @@ Scenario: User can start an addition game
     When the user clicks on the "Addition" game card
     Then the user should be taken to the addition game
     And the game should display an addition problem
+
+Scenario: User can start a subtraction game
+    Given the user is on the math games page
+    When the user clicks on the "Subtraction" game card
+    Then the user should be taken to the subtraction game
+    And the game should display a subtraction problem
 
 Scenario: User can answer a question correctly
     Given the user is playing the math game

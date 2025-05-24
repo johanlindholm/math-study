@@ -1,6 +1,7 @@
 export enum GameType {
   MULTIPLICATION = 'multiplication',
   ADDITION = 'addition',
+  SUBTRACTION = 'subtraction',
   // Add more game types here in the future
 }
 
@@ -30,6 +31,20 @@ export const GAME_CONFIGS: Record<GameType, GameConfig> = {
   [GameType.ADDITION]: {
     operation: (a, b) => a + b,
     symbol: '+',
+    generateIncorrectAnswer: (a, b, correct, existing) => {
+      let offset = Math.floor(Math.random() * 5) + 1; // 1-5
+      if (Math.random() < 0.5) offset *= -1;
+      
+      let incorrect = correct + offset;
+      if (existing.includes(incorrect) || incorrect < 0) {
+        return correct + (Math.random() < 0.5 ? 1 : -1) * (Math.floor(Math.random() * 5) + 1);
+      }
+      return incorrect;
+    },
+  },
+  [GameType.SUBTRACTION]: {
+    operation: (a, b) => a - b,
+    symbol: '-',
     generateIncorrectAnswer: (a, b, correct, existing) => {
       let offset = Math.floor(Math.random() * 5) + 1; // 1-5
       if (Math.random() < 0.5) offset *= -1;
