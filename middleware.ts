@@ -1,10 +1,10 @@
 import createMiddleware from 'next-intl/middleware';
-import { locales, defaultLocale } from './i18n/request';
+import { locales, defaultLocale } from './i18n';
  
 export default createMiddleware({
   // A list of all locales that are supported
   locales,
- 
+
   // Used when no locale matches
   defaultLocale,
   
@@ -22,5 +22,9 @@ export const config = {
   // - _next/image (image optimization files)
   // - _next/data (client data files)
   // - favicon.ico, robots.txt, etc.
-  matcher: ['/((?!api|_next/static|_next/image|_next/data|favicon.ico|robots.txt).*)']
+  matcher: [
+    '/',
+    '/(en|sv)',
+    '/((?!api|_next|_vercel|.*\\..*|favicon.ico).*)'
+  ]
 };
