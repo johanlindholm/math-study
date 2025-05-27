@@ -1,10 +1,12 @@
 "use client";
 import { useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from '@/navigation';
+import { useSearchParams } from 'next/navigation';
 import AnswerButtons from '../components/AnswerButtons';
-import { useMathGame } from './useMathGame';
-import { GameType } from './types';
+import { useMathGame } from '@/app/math/game/useMathGame';
+import { GameType } from '@/app/math/game/types';
+import { useTranslations } from 'next-intl';
 
 const Confetti = dynamic(() => import('react-confetti'), {
   ssr: false
@@ -19,20 +21,16 @@ const shakeAnimation = `
 }
 `;
 
-const GAME_TITLES = {
-  [GameType.MULTIPLICATION]: 'Multiplication',
-  [GameType.ADDITION]: 'Addition',
-  [GameType.SUBTRACTION]: 'Subtraction',
-};
-
 export default function GameContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const gameType = (searchParams.get('type') as GameType) || GameType.MULTIPLICATION;
+  const t = useTranslations('math');
   
   const [showConfetti, setShowConfetti] = useState(false);
   const [confettiPosition, setConfettiPosition] = useState({ x: 0, y: 0 });
   const [confettiKey, setConfettiKey] = useState(0);
+  const [showPoints, setShowPoints] = useState(false);
 
   const handleGameOver = useCallback((finalScore: number) => {
     // You could add game over logic here, like saving high scores
@@ -44,12 +42,14 @@ export default function GameContent() {
     numberTwo,
     answers,
     score,
+    correctAnswers,
     timeLeft,
     isBlinking,
     isShaking,
     symbol,
     handleCorrectAnswer: onCorrectAnswer,
     handleIncorrectAnswer: onIncorrectAnswer,
+    lastPointsEarned,
   } = useMathGame({
     gameType,
     onGameOver: handleGameOver,
@@ -77,6 +77,12 @@ export default function GameContent() {
     // Hide confetti after animation
     setTimeout(() => {
       setShowConfetti(false);
+    }, 1500);
+
+    // Show points earned
+    setShowPoints(true);
+    setTimeout(() => {
+      setShowPoints(false);
     }, 1500);
 
     // Call the original handler
@@ -109,8 +115,18 @@ export default function GameContent() {
           tweenDuration={100}
         />
       )}
-      <div className="absolute top-8 right-8 text-4xl font-bold">
-        Score: {score}
+      <div className="absolute top-8 right-8">
+        <div className="text-4xl font-bold">
+          {t('game.score')}: {score}
+        </div>
+        <div className="text-2xl text-gray-600 mt-1">
+          {t('game.correct')}: {correctAnswers}
+        </div>
+        {showPoints && (
+          <div className="text-2xl font-bold text-green-500 animate-bounce mt-2">
+            +{lastPointsEarned} {t('game.points', { points: lastPointsEarned })}
+          </div>
+        )}
       </div>
       <div className="w-full max-w-xl px-4 mb-8">
         <div className="w-full bg-gray-200 rounded-full h-4">
@@ -120,7 +136,7 @@ export default function GameContent() {
           />
         </div>
       </div>
-      <h1 className="text-4xl font-bold mb-4">{GAME_TITLES[gameType]} Game</h1>
+      <h1 className="text-4xl font-bold mb-4">{t(`games.${gameType}.title`)}</h1>
       <p className={`mb-4 transition-opacity duration-300 ${isBlinking ? 'opacity-0' : 'opacity-100'} text-4xl`}>
         {numberOne} {symbol} {numberTwo}
       </p>
@@ -136,7 +152,7 @@ export default function GameContent() {
           className="m-2 p-4 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer text-2xl w-64"
           onClick={() => router.push('/math')}
         >
-          End Game
+          {t('game.endGame')}
         </button>
       </div>
     </div>

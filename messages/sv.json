@@ -1,0 +1,115 @@
+{
+  "common": {
+    "appName": "Mattestudie",
+    "loading": "Laddar...",
+    "error": "Fel",
+    "cancel": "Avbryt",
+    "save": "Spara",
+    "delete": "Ta bort",
+    "edit": "Redigera",
+    "signIn": "Logga in",
+    "signUp": "Registrera",
+    "signOut": "Logga ut"
+  },
+  "navigation": {
+    "home": "Hem",
+    "math": "Mattespel",
+    "profile": "Profil",
+    "settings": "Inställningar"
+  },
+  "home": {
+    "title": "Välkommen till Mattestudie",
+    "subtitle": "Lär dig matematik genom roliga och interaktiva spel",
+    "getStarted": "Kom igång",
+    "learnMore": "Läs mer"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Logga in",
+      "email": "E-post",
+      "password": "Lösenord",
+      "rememberMe": "Kom ihåg mig",
+      "forgotPassword": "Glömt lösenord?",
+      "noAccount": "Har du inget konto?",
+      "signUpLink": "Registrera dig",
+      "errors": {
+        "invalidCredentials": "Ogiltig e-post eller lösenord",
+        "general": "Ett fel uppstod vid inloggning"
+      }
+    },
+    "signUp": {
+      "title": "Skapa konto",
+      "name": "Namn",
+      "email": "E-post",
+      "password": "Lösenord",
+      "confirmPassword": "Bekräfta lösenord",
+      "hasAccount": "Har du redan ett konto?",
+      "signInLink": "Logga in",
+      "errors": {
+        "emailExists": "E-postadressen finns redan",
+        "passwordMismatch": "Lösenorden matchar inte",
+        "general": "Ett fel uppstod vid registrering"
+      }
+    }
+  },
+  "math": {
+    "title": "Mattespel",
+    "selectGame": "Välj ett spel",
+    "games": {
+      "multiplication": {
+        "title": "Multiplikation",
+        "description": "Öva på multiplikationstabellen"
+      },
+      "addition": {
+        "title": "Addition",
+        "description": "Öva på addition"
+      },
+      "subtraction": {
+        "title": "Subtraktion",
+        "description": "Öva på subtraktion"
+      }
+    },
+    "game": {
+      "score": "Poäng",
+      "correct": "Rätt",
+      "timeLeft": "Tid kvar",
+      "gameOver": "Spelet är slut!",
+      "finalScore": "Slutpoäng",
+      "playAgain": "Spela igen",
+      "endGame": "Avsluta spel",
+      "points": "{points} poäng!",
+      "difficulty": {
+        "easy": "Lätt",
+        "medium": "Medel",
+        "hard": "Svår"
+      }
+    }
+  },
+  "settings": {
+    "title": "Inställningar",
+    "language": "Språk",
+    "theme": "Tema",
+    "themes": {
+      "light": "Ljus",
+      "dark": "Mörk",
+      "system": "System"
+    },
+    "timeFormat": "Tidsformat",
+    "timeFormats": {
+      "12h": "12-timmar (FM/EM)",
+      "24h": "24-timmar"
+    },
+    "dateFormat": "Datumformat",
+    "dateFormats": {
+      "us": "MM/DD/ÅÅÅÅ",
+      "eu": "DD/MM/ÅÅÅÅ",
+      "iso": "ÅÅÅÅ-MM-DD"
+    }
+  },
+  "user": {
+    "profile": "Profil",
+    "settings": "Inställningar",
+    "statistics": "Statistik",
+    "achievements": "Prestationer"
+  }
+}
