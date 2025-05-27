@@ -31,7 +31,13 @@ When deploying to Vercel, ensure:
    - `output: 'standalone'` ensures proper bundling
    - `trailingSlash: false` ensures consistent URL handling
 
-3. **Common Issues**:
+3. **Automated Deployments**:
+   - GitHub Actions workflow in `.github/workflows/vercel-deployment.yml` handles automated deployments
+   - Pushes to `main` branch trigger production deployments
+   - Pull requests trigger preview deployments
+   - See `VERCEL_GITHUB_ACTIONS.md` for setup details and troubleshooting
+
+4. **Common Issues**:
    - 404 errors: Usually fixed by proper middleware matcher patterns
    - Locale detection: Ensure browser locale detection is working correctly
    - Routing: Use the `Link` component from `navigation.ts` for all internal links
