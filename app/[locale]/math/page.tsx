@@ -9,7 +9,7 @@ export default function MathPage() {
   const { status } = useSession({
     required: true,
     onUnauthenticated() {
-      redirect("/auth/signin");
+      redirect({ href: "/auth/signin", locale: "en" });
     },
   });
   
