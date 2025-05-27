@@ -1,0 +1,115 @@
+{
+  "common": {
+    "appName": "Math Study",
+    "loading": "Loading...",
+    "error": "Error",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out"
+  },
+  "navigation": {
+    "home": "Home",
+    "math": "Math Games",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "Welcome to Math Study",
+    "subtitle": "Learn math through fun and interactive games",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign In",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up",
+      "errors": {
+        "invalidCredentials": "Invalid email or password",
+        "general": "An error occurred during sign in"
+      }
+    },
+    "signUp": {
+      "title": "Create Account",
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in",
+      "errors": {
+        "emailExists": "Email already exists",
+        "passwordMismatch": "Passwords do not match",
+        "general": "An error occurred during sign up"
+      }
+    }
+  },
+  "math": {
+    "title": "Math Games",
+    "selectGame": "Select a Game",
+    "games": {
+      "multiplication": {
+        "title": "Multiplication",
+        "description": "Practice multiplication tables"
+      },
+      "addition": {
+        "title": "Addition",
+        "description": "Practice addition skills"
+      },
+      "subtraction": {
+        "title": "Subtraction",
+        "description": "Practice subtraction skills"
+      }
+    },
+    "game": {
+      "score": "Score",
+      "correct": "Correct",
+      "timeLeft": "Time Left",
+      "gameOver": "Game Over!",
+      "finalScore": "Final Score",
+      "playAgain": "Play Again",
+      "endGame": "End Game",
+      "points": "{points} points!",
+      "difficulty": {
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard"
+      }
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "themes": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "timeFormat": "Time Format",
+    "timeFormats": {
+      "12h": "12-hour (AM/PM)",
+      "24h": "24-hour"
+    },
+    "dateFormat": "Date Format",
+    "dateFormats": {
+      "us": "MM/DD/YYYY",
+      "eu": "DD/MM/YYYY",
+      "iso": "YYYY-MM-DD"
+    }
+  },
+  "user": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "statistics": "Statistics",
+    "achievements": "Achievements"
+  }
+}

@@ -1,18 +1,22 @@
 "use client"
 
 import { useSession, signOut } from "next-auth/react"
-import Link from "next/link"
+import { Link } from '@/navigation'
+import { LanguageSwitcher } from "./language-switcher"
+import { useTranslations } from 'next-intl'
 
 export default function UserMenu() {
   const { data: session, status } = useSession()
+  const t = useTranslations('common')
 
   if (status === "loading") {
-    return <div className="text-sm text-gray-500">Loading...</div>
+    return <div className="text-sm text-gray-500">{t('loading')}</div>
   }
 
   if (session) {
     return (
       <div className="flex items-center gap-4">
+        <LanguageSwitcher />
         <span className="text-sm text-gray-700">
           {session.user?.email}
         </span>
@@ -20,7 +24,7 @@ export default function UserMenu() {
           onClick={() => signOut()}
           className="text-sm text-gray-500 hover:text-gray-700"
         >
-          Sign out
+          {t('signOut')}
         </button>
       </div>
     )
@@ -28,17 +32,18 @@ export default function UserMenu() {
 
   return (
     <div className="flex items-center gap-4">
+      <LanguageSwitcher />
       <Link
         href="/auth/signin"
         className="text-sm text-gray-500 hover:text-gray-700"
       >
-        Sign in
+        {t('signIn')}
       </Link>
       <Link
         href="/auth/signup"
         className="text-sm font-medium text-blue-600 hover:text-blue-500"
       >
-        Sign up
+        {t('signUp')}
       </Link>
     </div>
   )

@@ -1,12 +1,15 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from '@/navigation';
 import UserMenu from "@/components/user-menu";
+import { useTranslations } from 'next-intl';
 
 export default function Home() {
+  const t = useTranslations();
+
   return (
     <div className="grid grid-rows-[auto_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-sans">
       <header className="w-full flex justify-between items-center row-start-1">
-        <h1 className="text-2xl font-bold">Math Learning App</h1>
+        <h1 className="text-2xl font-bold">{t('common.appName')}</h1>
         <UserMenu />
       </header>
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
@@ -19,13 +22,13 @@ export default function Home() {
           priority
         />
         <div className="text-center">
-          <h2 className="text-3xl font-bold mb-4">Welcome to Math Learning</h2>
-          <p className="text-gray-600 mb-8">Practice your math skills with interactive games</p>
+          <h2 className="text-3xl font-bold mb-4">{t('home.title')}</h2>
+          <p className="text-gray-600 mb-8">{t('home.subtitle')}</p>
           <Link
             href="/math"
             className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
           >
-            Start Learning
+            {t('home.getStarted')}
           </Link>
         </div>
 
