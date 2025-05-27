@@ -6,7 +6,27 @@
   "regions": ["all"],
   "rewrites": [
     { "source": "/", "destination": "/en" },
-    { "source": "/:locale(en|sv)/:path*", "destination": "/:locale/:path*" },
-    { "source": "/:path*", "destination": "/en/:path*" }
+    { "source": "/sv", "destination": "/sv/index" },
+    { "source": "/en", "destination": "/en/index" },
+    { "source": "/(.*)", "destination": "/$1" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
   ]
 }
