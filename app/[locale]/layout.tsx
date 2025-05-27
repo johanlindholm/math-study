@@ -4,7 +4,7 @@ import AuthSessionProvider from "@/components/providers/session-provider";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { locales } from '@/i18n';
+import { locales } from '@/i18n/request';
 
 export const metadata: Metadata = {
   title: "Math Learning App",
