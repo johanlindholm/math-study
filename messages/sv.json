@@ -111,5 +111,10 @@
     "settings": "Inställningar",
     "statistics": "Statistik",
     "achievements": "Prestationer"
+  },
+  "notFound": {
+    "title": "404 - Sidan hittades inte",
+    "message": "Sidan du söker finns inte.",
+    "returnHome": "Tillbaka till Hem"
   }
 }
