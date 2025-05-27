@@ -5,6 +5,8 @@
   "cleanUrls": true,
   "regions": ["all"],
   "rewrites": [
-    { "source": "/(.*)", "destination": "/$1" }
+    { "source": "/", "destination": "/en" },
+    { "source": "/:locale(en|sv)/:path*", "destination": "/:locale/:path*" },
+    { "source": "/:path*", "destination": "/en/:path*" }
   ]
 }
