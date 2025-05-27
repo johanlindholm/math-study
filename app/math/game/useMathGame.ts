@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { GameType, Answer } from './types';
 
+// Re-export the Answer type
+export type { Answer };
+
 interface MathGameProps {
   gameType: GameType;
   onGameOver?: (finalScore: number) => void;
@@ -57,7 +60,7 @@ export function useMathGame({
   // Generate a list of answers
   const generateAnswers = useCallback(() => {
     const correctAnswer = generateCorrectAnswer();
-    const incorrectAnswers = [];
+    const incorrectAnswers: number[] = [];
     
     // Generate 3 incorrect answers
     while (incorrectAnswers.length < 3) {

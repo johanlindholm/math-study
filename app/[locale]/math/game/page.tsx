@@ -10,7 +10,7 @@ export default function GamePage() {
   const { status } = useSession({
     required: true,
     onUnauthenticated() {
-      redirect("/auth/signin");
+      redirect({ href: "/auth/signin", locale: "en" });
     },
   });
   
