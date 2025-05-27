@@ -22,5 +22,11 @@ export const config = {
   // - _next/image (image optimization files)
   // - _next/data (client data files)
   // - favicon.ico, robots.txt, etc.
-  matcher: ['/((?!api|_next/static|_next/image|_next/data|favicon.ico|robots.txt).*)']
+  matcher: [
+    // Match all pathnames except for
+    // - api routes
+    // - static files and assets
+    // - metadata files
+    '/((?!api|_next|.*\\..*|favicon.ico).*)'
+  ]
 };

@@ -3,5 +3,8 @@
   "framework": "nextjs",
   "buildCommand": "npm run build",
   "cleanUrls": true,
-  "regions": ["all"]
+  "regions": ["all"],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/$1" }
+  ]
 }
