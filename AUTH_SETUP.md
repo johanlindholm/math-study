@@ -15,7 +15,19 @@ This guide explains how to set up and use the authentication system with Prisma 
    openssl rand -base64 32
    ```
    
-   Update `NEXTAUTH_SECRET` in `.env` with the generated value.
+   Update the authentication secret in `.env` with the generated value. 
+   For maximum compatibility, you can use either `AUTH_SECRET` (recommended for newer setups) or `NEXTAUTH_SECRET` (legacy):
+   ```bash
+   # Option 1: Newer Auth.js v5+ compatible (recommended)
+   AUTH_SECRET=your_generated_secret_here
+   
+   # Option 2: Legacy NextAuth.js v4 compatible
+   NEXTAUTH_SECRET=your_generated_secret_here
+   
+   # Option 3: Both for maximum compatibility
+   AUTH_SECRET=your_generated_secret_here
+   NEXTAUTH_SECRET=your_generated_secret_here
+   ```
 
 2. **Initialize Database**
    ```bash
