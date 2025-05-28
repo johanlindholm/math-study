@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Support for next-intl
+  // This adds the internationalization configuration without i18n routing
 };
 
 export default nextConfig;

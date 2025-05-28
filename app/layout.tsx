@@ -1,23 +1,35 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AuthSessionProvider from "@/components/providers/session-provider";
+import { NextIntlClientProvider } from 'next-intl';
+import { useMessages, useLocale } from 'next-intl';
 
 export const metadata: Metadata = {
   title: "Math Learning App",
   description: "Used to learn Math",
 };
 
+// Define supported locales for static generation
+export function generateStaticParams() {
+  return [{ locale: 'en' }, { locale: 'es' }, { locale: 'de' }];
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const messages = useMessages();
+  const locale = useLocale();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className="antialiased font-sans">
-        <AuthSessionProvider>
-          {children}
-        </AuthSessionProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <AuthSessionProvider>
+            {children}
+          </AuthSessionProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

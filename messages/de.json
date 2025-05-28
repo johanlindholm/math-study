@@ -1,0 +1,32 @@
+{
+  "HomePage": {
+    "title": "Mathe-Lern-App",
+    "welcome": "Willkommen beim Mathe-Lernen",
+    "description": "Übe deine Mathematik-Fähigkeiten mit interaktiven Spielen",
+    "readDocs": "Unsere Dokumentation lesen",
+    "learn": "Lernen",
+    "examples": "Beispiele"
+  },
+  "Navigation": {
+    "home": "Startseite",
+    "about": "Über uns",
+    "math": "Mathematik"
+  },
+  "GamePage": {
+    "score": "Punktzahl",
+    "endGame": "Spiel beenden",
+    "gameTypes": {
+      "multiplication": "Multiplikation",
+      "addition": "Addition",
+      "subtraction": "Subtraktion"
+    }
+  },
+  "UserMenu": {
+    "signIn": "Anmelden",
+    "signOut": "Abmelden",
+    "profile": "Profil"
+  },
+  "Common": {
+    "loading": "Wird geladen..."
+  }
+}
