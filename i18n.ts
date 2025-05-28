@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 // for server-side rendering (SSR) and server components.
 export default getRequestConfig(async () => {
   // Determine the locale from a cookie, defaulting to 'en'
-  const locale = cookies().get('NEXT_LOCALE')?.value ?? 'en';
+  const locale = (await cookies()).get('NEXT_LOCALE')?.value ?? 'en';
 
   return {
     locale,
