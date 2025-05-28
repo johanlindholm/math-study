@@ -15,6 +15,8 @@
   "GamePage": {
     "score": "Score",
     "endGame": "End Game",
+    "metaTitle": "Math Game - Learning App",
+    "metaDescription": "Interactive math game for learning and practice",
     "gameTypes": {
       "multiplication": "Multiplication",
       "addition": "Addition",

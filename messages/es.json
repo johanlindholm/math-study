@@ -15,6 +15,8 @@
   "GamePage": {
     "score": "Puntuación",
     "endGame": "Finalizar Juego",
+    "metaTitle": "Juego de Matemáticas - Aplicación de Aprendizaje",
+    "metaDescription": "Juego interactivo de matemáticas para aprender y practicar",
     "gameTypes": {
       "multiplication": "Multiplicación",
       "addition": "Suma",
