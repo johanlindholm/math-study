@@ -18,7 +18,8 @@
     "gameTypes": {
       "multiplication": "Multiplication",
       "addition": "Addition",
-      "subtraction": "Subtraction"
+      "subtraction": "Subtraction",
+      "game": "Game"
     }
   },
   "UserMenu": {

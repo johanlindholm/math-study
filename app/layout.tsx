@@ -1,13 +1,7 @@
-import type { Metadata } from "next";
 import "./globals.css";
 import AuthSessionProvider from "@/components/providers/session-provider";
 import { NextIntlClientProvider } from 'next-intl';
 import { useMessages, useLocale } from 'next-intl';
-
-export const metadata: Metadata = {
-  title: "Math Learning App",
-  description: "Used to learn Math",
-};
 
 // Define supported locales for static generation
 export function generateStaticParams() {
