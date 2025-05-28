@@ -25,7 +25,8 @@
   "UserMenu": {
     "signIn": "Iniciar Sesión",
     "signOut": "Cerrar Sesión",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "signUp": "Registrarse"
   },
   "Common": {
     "loading": "Cargando..."

@@ -25,7 +25,8 @@
   "UserMenu": {
     "signIn": "Sign In",
     "signOut": "Sign Out",
-    "profile": "Profile"
+    "profile": "Profile",
+    "signUp": "Sign Up"
   },
   "Common": {
     "loading": "Loading..."
