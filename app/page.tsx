@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import UserMenu from "@/components/user-menu";
-import { useTranslations } from 'next-intl';
-import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import { getTranslations } from 'next-intl/server';
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -14,9 +13,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function Home() {
-  const t = useTranslations('HomePage');
-  const tNav = useTranslations('Navigation');
+export default async function Home() {
+  const t = await getTranslations('HomePage');
+  const tNav = await getTranslations('Navigation');
 
   return (
     <div className="grid grid-rows-[auto_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-sans">

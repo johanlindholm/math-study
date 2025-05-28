@@ -1,20 +1,15 @@
 import "./globals.css";
 import AuthSessionProvider from "@/components/providers/session-provider";
 import { NextIntlClientProvider } from 'next-intl';
-import { useMessages, useLocale } from 'next-intl';
+import { getMessages, getLocale } from 'next-intl/server';
 
-// Define supported locales for static generation
-export function generateStaticParams() {
-  return [{ locale: 'en' }, { locale: 'es' }, { locale: 'de' }];
-}
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const messages = useMessages();
-  const locale = useLocale();
+  const messages = await getMessages();
+  const locale = await getLocale();
 
   return (
     <html lang={locale}>
