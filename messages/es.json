@@ -1,0 +1,36 @@
+{
+  "HomePage": {
+    "title": "Aplicación de Aprendizaje de Matemáticas",
+    "welcome": "Bienvenido a Aprendizaje de Matemáticas",
+    "description": "Practica tus habilidades matemáticas con juegos interactivos",
+    "readDocs": "Leer nuestra documentación",
+    "learn": "Aprender",
+    "examples": "Ejemplos"
+  },
+  "Navigation": {
+    "home": "Inicio",
+    "about": "Acerca de",
+    "math": "Matemáticas"
+  },
+  "GamePage": {
+    "score": "Puntuación",
+    "endGame": "Finalizar Juego",
+    "metaTitle": "Juego de Matemáticas - Aplicación de Aprendizaje",
+    "metaDescription": "Juego interactivo de matemáticas para aprender y practicar",
+    "gameTypes": {
+      "multiplication": "Multiplicación",
+      "addition": "Suma",
+      "subtraction": "Resta",
+      "game": "Juego"
+    }
+  },
+  "UserMenu": {
+    "signIn": "Iniciar Sesión",
+    "signOut": "Cerrar Sesión",
+    "profile": "Perfil",
+    "signUp": "Registrarse"
+  },
+  "Common": {
+    "loading": "Cargando..."
+  }
+}

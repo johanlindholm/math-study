@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import AnswerButtons from '../components/AnswerButtons';
 import { useMathGame } from './useMathGame';
 import { GameType } from './types';
+import { useTranslations } from 'next-intl';
 
 const Confetti = dynamic(() => import('react-confetti'), {
   ssr: false
@@ -18,12 +19,6 @@ const shakeAnimation = `
   75% { transform: translateX(5px); }
 }
 `;
-
-const GAME_TITLES = {
-  [GameType.MULTIPLICATION]: 'Multiplication',
-  [GameType.ADDITION]: 'Addition',
-  [GameType.SUBTRACTION]: 'Subtraction',
-};
 
 export default function GameContent() {
   const router = useRouter();
@@ -87,6 +82,15 @@ export default function GameContent() {
     onIncorrectAnswer();
     router.push('/math');
   }, [onIncorrectAnswer, router]);
+  
+  const t = useTranslations('GamePage');
+  
+  // Get game title from translations
+  const gameTypeMap = {
+    [GameType.MULTIPLICATION]: t('gameTypes.multiplication'),
+    [GameType.ADDITION]: t('gameTypes.addition'),
+    [GameType.SUBTRACTION]: t('gameTypes.subtraction'),
+  };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
@@ -110,7 +114,7 @@ export default function GameContent() {
         />
       )}
       <div className="absolute top-8 right-8 text-4xl font-bold">
-        Score: {score}
+        {t('score')}: {score}
       </div>
       <div className="w-full max-w-xl px-4 mb-8">
         <div className="w-full bg-gray-200 rounded-full h-4">
@@ -120,7 +124,7 @@ export default function GameContent() {
           />
         </div>
       </div>
-      <h1 className="text-4xl font-bold mb-4">{GAME_TITLES[gameType]} Game</h1>
+      <h1 className="text-4xl font-bold mb-4">{gameTypeMap[gameType]} {t('gameTypes.game')}</h1>
       <p className={`mb-4 transition-opacity duration-300 ${isBlinking ? 'opacity-0' : 'opacity-100'} text-4xl`}>
         {numberOne} {symbol} {numberTwo}
       </p>
@@ -136,7 +140,7 @@ export default function GameContent() {
           className="m-2 p-4 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer text-2xl w-64"
           onClick={() => router.push('/math')}
         >
-          End Game
+          {t('endGame')}
         </button>
       </div>
     </div>

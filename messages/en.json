@@ -1,0 +1,36 @@
+{
+  "HomePage": {
+    "title": "Math Learning App",
+    "welcome": "Welcome to Math Learning",
+    "description": "Practice your math skills with interactive games",
+    "readDocs": "Read our docs",
+    "learn": "Learn",
+    "examples": "Examples"
+  },
+  "Navigation": {
+    "home": "Home",
+    "about": "About",
+    "math": "Math"
+  },
+  "GamePage": {
+    "score": "Score",
+    "endGame": "End Game",
+    "metaTitle": "Math Game - Learning App",
+    "metaDescription": "Interactive math game for learning and practice",
+    "gameTypes": {
+      "multiplication": "Multiplication",
+      "addition": "Addition",
+      "subtraction": "Subtraction",
+      "game": "Game"
+    }
+  },
+  "UserMenu": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "profile": "Profile",
+    "signUp": "Sign Up"
+  },
+  "Common": {
+    "loading": "Loading..."
+  }
+}
