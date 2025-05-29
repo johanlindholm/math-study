@@ -29,6 +29,12 @@ const animations = `
     transform: translateY(-100px) scale(1.5);
   }
 }
+
+@keyframes starShake {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(0.8) rotate(-10deg); }
+  75% { transform: scale(0.8) rotate(10deg); }
+}
 `;
 
 interface FloatingPoint {
@@ -47,8 +53,10 @@ export default function GameContent() {
   const [confettiPosition, setConfettiPosition] = useState({ x: 0, y: 0 });
   const [confettiKey, setConfettiKey] = useState(0);
   const [floatingPoints, setFloatingPoints] = useState<FloatingPoint[]>([]);
+  const [animatingStarIndex, setAnimatingStarIndex] = useState<number | null>(null);
   const floatingPointTimers = useRef<Map<number, NodeJS.Timeout>>(new Map());
   const confettiTimers = useRef<NodeJS.Timeout[]>([]);
+  const starAnimationTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Cleanup timers on unmount
   useEffect(() => {
@@ -60,13 +68,20 @@ export default function GameContent() {
       // Clear all confetti timers
       confettiTimers.current.forEach(timer => clearTimeout(timer));
       confettiTimers.current = [];
+      
+      // Clear star animation timer
+      if (starAnimationTimer.current) {
+        clearTimeout(starAnimationTimer.current);
+      }
     };
   }, []);
 
   const handleGameOver = useCallback((finalScore: number) => {
-    // You could add game over logic here, like saving high scores
-    console.log(`Game over! Final score: ${finalScore}`);
-  }, []);
+    // Redirect to math page when game is over
+    setTimeout(() => {
+      router.push('/math');
+    }, 1000);
+  }, [router]);
 
   const {
     numberOne,
@@ -78,6 +93,8 @@ export default function GameContent() {
     isBlinking,
     isShaking,
     symbol,
+    lives,
+    showCorrect,
     handleCorrectAnswer: onCorrectAnswer,
     handleIncorrectAnswer: onIncorrectAnswer,
   } = useMathGame({
@@ -138,9 +155,19 @@ export default function GameContent() {
   }, [onCorrectAnswer, showConfetti, timeLeft]);
 
   const handleIncorrectAnswer = useCallback(() => {
+    // Animate the star that will be lost
+    const starToAnimate = lives - 1;
+    if (starToAnimate >= 0) {
+      setAnimatingStarIndex(starToAnimate);
+      if (starAnimationTimer.current) {
+        clearTimeout(starAnimationTimer.current);
+      }
+      starAnimationTimer.current = setTimeout(() => {
+        setAnimatingStarIndex(null);
+      }, 300);
+    }
     onIncorrectAnswer();
-    router.push('/math');
-  }, [onIncorrectAnswer, router]);
+  }, [onIncorrectAnswer, lives]);
   
   const t = useTranslations('GamePage');
   
@@ -186,6 +213,21 @@ export default function GameContent() {
           +{point.value}
         </div>
       ))}
+      <div className="absolute top-8 left-8 flex flex-col items-start gap-2">
+        <div className="flex gap-2">
+          {[0, 1, 2].map((index) => (
+            <div
+              key={index}
+              className={`text-5xl transition-colors duration-300 ${index < lives ? 'text-yellow-400' : 'text-gray-400'}`}
+              style={{
+                animation: animatingStarIndex === index ? 'starShake 0.3s ease-in-out' : 'none'
+              }}
+            >
+              ★
+            </div>
+          ))}
+        </div>
+      </div>
       <div className="absolute top-8 right-8 flex flex-col items-end">
         <div className="text-5xl font-bold text-purple-600">
           {t('points')}: {points}
@@ -213,6 +255,7 @@ export default function GameContent() {
           onIncorrectAnswer={handleIncorrectAnswer}
           isBlinking={isBlinking}
           isShaking={isShaking}
+          showCorrect={showCorrect}
         />
         <button 
           className="m-2 p-4 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer text-2xl w-64"

@@ -22,6 +22,8 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
   const [isBlinking, setIsBlinking] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [lives, setLives] = useState(3);
+  const [showCorrect, setShowCorrect] = useState(false);
 
   const config = GAME_CONFIGS[gameType];
 
@@ -66,6 +68,7 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
     setAnswers(generateAnswers(num1, num2));
     setTimeLeft(10);
     setIsBlinking(true);
+    setShowCorrect(false);
     setTimeout(() => setIsBlinking(false), 300);
   }, [generateAnswers, config, gameType]);
 
@@ -78,11 +81,24 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
 
   const handleIncorrectAnswer = useCallback(() => {
     setIsShaking(true);
-    setTimeout(() => {
-      setGameOver(true);
-      onGameOver(score);
-    }, 500);
-  }, [onGameOver, score]);
+    setShowCorrect(true);
+    setLives(prev => {
+      const newLives = prev - 1;
+      if (newLives <= 0) {
+        setTimeout(() => {
+          setGameOver(true);
+          onGameOver(score);
+        }, 1500);
+      } else {
+        // Continue game with new problem after showing correct answer
+        setTimeout(() => {
+          generateNewProblem();
+          setIsShaking(false);
+        }, 1500);
+      }
+      return newLives;
+    });
+  }, [onGameOver, score, generateNewProblem]);
 
   // Timer effect
   useEffect(() => {
@@ -90,17 +106,23 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
 
     const timer = setInterval(() => {
       setTimeLeft(prev => {
-        if (prev <= 0.1) {
-          clearInterval(timer);
-          handleIncorrectAnswer();
+        const newTime = Number((prev - 0.1).toFixed(1));
+        if (newTime <= 0) {
           return 0;
         }
-        return Number((prev - 0.1).toFixed(1));
+        return newTime;
       });
     }, 100);
 
     return () => clearInterval(timer);
-  }, [gameOver, handleIncorrectAnswer]);
+  }, [gameOver]);
+
+  // Handle timeout separately
+  useEffect(() => {
+    if (timeLeft === 0 && !gameOver) {
+      handleIncorrectAnswer();
+    }
+  }, [timeLeft, gameOver, handleIncorrectAnswer]);
 
   // Initialize game
   useEffect(() => {
@@ -119,6 +141,8 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
     isBlinking,
     isShaking,
     gameOver,
+    lives,
+    showCorrect,
     handleCorrectAnswer,
     handleIncorrectAnswer,
     symbol: config.symbol,
