@@ -17,6 +17,7 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
   const [result, setResult] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [score, setScore] = useState(0);
+  const [points, setPoints] = useState(0);
   const [timeLeft, setTimeLeft] = useState(10);
   const [isBlinking, setIsBlinking] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
@@ -70,8 +71,10 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
 
   const handleCorrectAnswer = useCallback(() => {
     setScore(prev => prev + 1);
+    // Award points based on remaining time (rounded to nearest integer)
+    setPoints(prev => prev + Math.round(timeLeft));
     generateNewProblem();
-  }, [generateNewProblem]);
+  }, [generateNewProblem, timeLeft]);
 
   const handleIncorrectAnswer = useCallback(() => {
     setIsShaking(true);
@@ -111,6 +114,7 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
     result,
     answers,
     score,
+    points,
     timeLeft,
     isBlinking,
     isShaking,

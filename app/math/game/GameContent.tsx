@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AnswerButtons from '../components/AnswerButtons';
@@ -11,14 +11,32 @@ const Confetti = dynamic(() => import('react-confetti'), {
   ssr: false
 });
 
-// Add the shake keyframes animation
-const shakeAnimation = `
+// Add the shake and floating points animations
+const animations = `
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
 }
+
+@keyframes floatUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100px) scale(1.5);
+  }
+}
 `;
+
+interface FloatingPoint {
+  id: number;
+  value: number;
+  x: number;
+  y: number;
+}
 
 export default function GameContent() {
   const router = useRouter();
@@ -28,6 +46,22 @@ export default function GameContent() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [confettiPosition, setConfettiPosition] = useState({ x: 0, y: 0 });
   const [confettiKey, setConfettiKey] = useState(0);
+  const [floatingPoints, setFloatingPoints] = useState<FloatingPoint[]>([]);
+  const floatingPointTimers = useRef<Map<number, NodeJS.Timeout>>(new Map());
+  const confettiTimers = useRef<NodeJS.Timeout[]>([]);
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      // Clear all floating point timers
+      floatingPointTimers.current.forEach(timer => clearTimeout(timer));
+      floatingPointTimers.current.clear();
+      
+      // Clear all confetti timers
+      confettiTimers.current.forEach(timer => clearTimeout(timer));
+      confettiTimers.current = [];
+    };
+  }, []);
 
   const handleGameOver = useCallback((finalScore: number) => {
     // You could add game over logic here, like saving high scores
@@ -39,6 +73,7 @@ export default function GameContent() {
     numberTwo,
     answers,
     score,
+    points,
     timeLeft,
     isBlinking,
     isShaking,
@@ -53,30 +88,54 @@ export default function GameContent() {
   const handleCorrectAnswer = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     const button = event.currentTarget;
     const rect = button.getBoundingClientRect();
+    const centerX = rect.x + rect.width / 2;
+    const centerY = rect.y + rect.height / 2;
+    
     setConfettiPosition({
-      x: rect.x + rect.width / 2,
-      y: rect.y + rect.height / 2
+      x: centerX,
+      y: centerY
     });
+
+    // Add floating points indicator
+    const pointsEarned = Math.round(timeLeft);
+    const newFloatingPoint: FloatingPoint = {
+      id: Date.now(),
+      value: pointsEarned,
+      x: centerX,
+      y: centerY
+    };
+    
+    setFloatingPoints(prev => [...prev, newFloatingPoint]);
+    
+    // Remove floating point after animation completes
+    const timerId = setTimeout(() => {
+      setFloatingPoints(prev => prev.filter(p => p.id !== newFloatingPoint.id));
+      floatingPointTimers.current.delete(newFloatingPoint.id);
+    }, 2000);
+    
+    floatingPointTimers.current.set(newFloatingPoint.id, timerId);
 
     // Trigger confetti animation
     if (showConfetti) {
       setShowConfetti(false);
       setConfettiKey(prev => prev + 1);
-      setTimeout(() => {
+      const timer1 = setTimeout(() => {
         setShowConfetti(true);
       }, 50);
+      confettiTimers.current.push(timer1);
     } else {
       setShowConfetti(true);
     }
 
     // Hide confetti after animation
-    setTimeout(() => {
+    const timer2 = setTimeout(() => {
       setShowConfetti(false);
     }, 1500);
+    confettiTimers.current.push(timer2);
 
     // Call the original handler
     onCorrectAnswer();
-  }, [onCorrectAnswer, showConfetti]);
+  }, [onCorrectAnswer, showConfetti, timeLeft]);
 
   const handleIncorrectAnswer = useCallback(() => {
     onIncorrectAnswer();
@@ -94,7 +153,7 @@ export default function GameContent() {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <style jsx global>{shakeAnimation}</style>
+      <style jsx global>{animations}</style>
       {showConfetti && (
         <Confetti 
           key={confettiKey}
@@ -113,8 +172,27 @@ export default function GameContent() {
           tweenDuration={100}
         />
       )}
-      <div className="absolute top-8 right-8 text-4xl font-bold">
-        {t('score')}: {score}
+      {floatingPoints.map((point) => (
+        <div
+          key={point.id}
+          className="fixed pointer-events-none text-4xl font-bold text-green-600 z-50"
+          style={{
+            left: `${point.x}px`,
+            top: `${point.y}px`,
+            animation: 'floatUp 2s ease-out forwards',
+            transform: 'translate(-50%, -50%)'
+          }}
+        >
+          +{point.value}
+        </div>
+      ))}
+      <div className="absolute top-8 right-8 flex flex-col items-end">
+        <div className="text-5xl font-bold text-purple-600">
+          {t('points')}: {points}
+        </div>
+        <div className="text-2xl font-semibold text-gray-600">
+          {t('score')}: {score}
+        </div>
       </div>
       <div className="w-full max-w-xl px-4 mb-8">
         <div className="w-full bg-gray-200 rounded-full h-4">
