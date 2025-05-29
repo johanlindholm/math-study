@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AnswerButtons from '../components/AnswerButtons';
@@ -47,6 +47,21 @@ export default function GameContent() {
   const [confettiPosition, setConfettiPosition] = useState({ x: 0, y: 0 });
   const [confettiKey, setConfettiKey] = useState(0);
   const [floatingPoints, setFloatingPoints] = useState<FloatingPoint[]>([]);
+  const floatingPointTimers = useRef<Map<number, NodeJS.Timeout>>(new Map());
+  const confettiTimers = useRef<NodeJS.Timeout[]>([]);
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      // Clear all floating point timers
+      floatingPointTimers.current.forEach(timer => clearTimeout(timer));
+      floatingPointTimers.current.clear();
+      
+      // Clear all confetti timers
+      confettiTimers.current.forEach(timer => clearTimeout(timer));
+      confettiTimers.current = [];
+    };
+  }, []);
 
   const handleGameOver = useCallback((finalScore: number) => {
     // You could add game over logic here, like saving high scores
@@ -93,25 +108,30 @@ export default function GameContent() {
     setFloatingPoints(prev => [...prev, newFloatingPoint]);
     
     // Remove floating point after animation completes
-    setTimeout(() => {
+    const timerId = setTimeout(() => {
       setFloatingPoints(prev => prev.filter(p => p.id !== newFloatingPoint.id));
+      floatingPointTimers.current.delete(newFloatingPoint.id);
     }, 2000);
+    
+    floatingPointTimers.current.set(newFloatingPoint.id, timerId);
 
     // Trigger confetti animation
     if (showConfetti) {
       setShowConfetti(false);
       setConfettiKey(prev => prev + 1);
-      setTimeout(() => {
+      const timer1 = setTimeout(() => {
         setShowConfetti(true);
       }, 50);
+      confettiTimers.current.push(timer1);
     } else {
       setShowConfetti(true);
     }
 
     // Hide confetti after animation
-    setTimeout(() => {
+    const timer2 = setTimeout(() => {
       setShowConfetti(false);
     }, 1500);
+    confettiTimers.current.push(timer2);
 
     // Call the original handler
     onCorrectAnswer();
