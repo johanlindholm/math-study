@@ -10,7 +10,7 @@ const handler = NextAuth(authOptions)
 async function handleAuthRequest(
   request: NextRequest,
   params: Promise<{ nextauth: string[] }>,
-  method: string
+  method: "GET" | "POST"
 ) {
   // Await params as required in Next.js 15
   const resolvedParams = await params
