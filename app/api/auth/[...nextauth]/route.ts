@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import NextAuth from "next-auth"
 import { authOptions } from "@/lib/auth"
-import type { NextAuthOptions } from "next-auth"
-
 // Create handler with proper types
 const handler = NextAuth(authOptions)
 
