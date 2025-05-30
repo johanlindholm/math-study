@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 // Uncomment the following line if using Prisma Accelerate
-// import { withAccelerate } from '@prisma/extension-accelerate'
+import { withAccelerate } from '@prisma/extension-accelerate'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
@@ -20,12 +20,12 @@ const logConfig = shouldLog ? [
 ] : ['error', 'warn']
 
 // Standard Prisma Client with logging
-export const prisma = globalForPrisma.prisma ?? new PrismaClient({
-  log: logConfig as any
-})
+// export const prisma = globalForPrisma.prisma ?? new PrismaClient({
+//   log: logConfig as any
+// })
 
 // If using Prisma Accelerate, use this instead:
-// export const prisma = globalForPrisma.prisma ?? new PrismaClient({ log: logConfig as any }).$extends(withAccelerate())
+export const prisma = globalForPrisma.prisma ?? new PrismaClient({ log: logConfig as any }).$extends(withAccelerate())
 
 // Log query events in non-production
 // Note: $on is deprecated in newer Prisma versions, but still works
