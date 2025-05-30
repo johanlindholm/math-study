@@ -3,10 +3,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    // Test basic connection
-    await prisma.$connect()
-    
-    // Try a simple query
+    // Try a simple query - Prisma will handle connection pooling automatically
     const userCount = await prisma.user.count()
     
     return NextResponse.json({ 
@@ -22,7 +19,5 @@ export async function GET() {
       // In production, don't expose full error details
       details: process.env.NODE_ENV === 'development' ? error : undefined
     }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
 }
