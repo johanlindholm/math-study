@@ -141,9 +141,6 @@ export const authOptions: NextAuthOptions = {
         sessionUserId: session?.user?.id,
         tokenId: token?.id
       })
-    },
-    async error(error) {
-      console.error("[Auth] Error event:", error)
     }
   },
   session: {

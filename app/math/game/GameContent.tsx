@@ -61,17 +61,21 @@ export default function GameContent() {
   // Cleanup timers on unmount
   useEffect(() => {
     return () => {
+      // Copy refs to local variables to avoid stale closure warnings
+      const currentFloatingTimers = floatingPointTimers.current;
+      const currentConfettiTimers = confettiTimers.current;
+      const currentStarTimer = starAnimationTimer.current;
+      
       // Clear all floating point timers
-      floatingPointTimers.current.forEach(timer => clearTimeout(timer));
-      floatingPointTimers.current.clear();
+      currentFloatingTimers.forEach(timer => clearTimeout(timer));
+      currentFloatingTimers.clear();
       
       // Clear all confetti timers
-      confettiTimers.current.forEach(timer => clearTimeout(timer));
-      confettiTimers.current = [];
+      currentConfettiTimers.forEach(timer => clearTimeout(timer));
       
       // Clear star animation timer
-      if (starAnimationTimer.current) {
-        clearTimeout(starAnimationTimer.current);
+      if (currentStarTimer) {
+        clearTimeout(currentStarTimer);
       }
     };
   }, []);
