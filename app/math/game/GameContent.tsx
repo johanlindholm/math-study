@@ -61,17 +61,23 @@ export default function GameContent() {
   // Cleanup timers on unmount
   useEffect(() => {
     return () => {
+      // Copy refs to local variables to avoid stale closure warnings
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      const currentFloatingTimers = floatingPointTimers.current;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      const currentConfettiTimers = confettiTimers.current;
+      const currentStarTimer = starAnimationTimer.current;
+      
       // Clear all floating point timers
-      floatingPointTimers.current.forEach(timer => clearTimeout(timer));
-      floatingPointTimers.current.clear();
+      currentFloatingTimers.forEach(timer => clearTimeout(timer));
+      currentFloatingTimers.clear();
       
       // Clear all confetti timers
-      confettiTimers.current.forEach(timer => clearTimeout(timer));
-      confettiTimers.current = [];
+      currentConfettiTimers.forEach(timer => clearTimeout(timer));
       
       // Clear star animation timer
-      if (starAnimationTimer.current) {
-        clearTimeout(starAnimationTimer.current);
+      if (currentStarTimer) {
+        clearTimeout(currentStarTimer);
       }
     };
   }, []);

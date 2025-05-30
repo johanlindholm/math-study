@@ -3,6 +3,7 @@ import Link from "next/link";
 import UserMenu from "@/components/user-menu";
 import { getTranslations } from 'next-intl/server';
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
+import { DatabaseTestButton } from "@/components/ui/DatabaseTestButton";
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -22,6 +23,7 @@ export default async function Home() {
       <header className="w-full flex justify-between items-center row-start-1">
         <h1 className="text-2xl font-bold">{t('title')}</h1>
         <div className="flex items-center gap-4">
+          <DatabaseTestButton />
           <LanguageSwitcher />
           <UserMenu />
         </div>
