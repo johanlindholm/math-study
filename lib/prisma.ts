@@ -1,10 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-// Uncomment the following line if using Prisma Accelerate
 import { withAccelerate } from '@prisma/extension-accelerate'
-
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined
-}
 
 // Enable logging in development and preview environments
 const shouldLog = process.env.NODE_ENV === 'development' || 
@@ -19,13 +14,19 @@ const logConfig = shouldLog ? [
   { level: 'info', emit: 'stdout' }
 ] : ['error', 'warn']
 
-// Standard Prisma Client with logging
-// export const prisma = globalForPrisma.prisma ?? new PrismaClient({
-//   log: logConfig as any
-// })
+// Create Prisma Client instance with Accelerate
+const prismaClientSingleton = () => {
+  return new PrismaClient({ 
+    log: logConfig as any 
+  }).$extends(withAccelerate())
+}
 
-// If using Prisma Accelerate, use this instead:
-export const prisma = globalForPrisma.prisma ?? new PrismaClient({ log: logConfig as any }).$extends(withAccelerate())
+// Declare type for the extended client
+declare global {
+  var prismaGlobal: undefined | ReturnType<typeof prismaClientSingleton>
+}
+
+export const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
 
 // Log query events in non-production
 // Note: $on is deprecated in newer Prisma versions, but still works
@@ -40,4 +41,4 @@ if (shouldLog && typeof (prisma as any).$on === 'function') {
   })
 }
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma
