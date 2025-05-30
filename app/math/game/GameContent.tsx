@@ -62,7 +62,9 @@ export default function GameContent() {
   useEffect(() => {
     return () => {
       // Copy refs to local variables to avoid stale closure warnings
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       const currentFloatingTimers = floatingPointTimers.current;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       const currentConfettiTimers = confettiTimers.current;
       const currentStarTimer = starAnimationTimer.current;
       

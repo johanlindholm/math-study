@@ -28,7 +28,8 @@ export const prisma = globalForPrisma.prisma ?? new PrismaClient({
 // export const prisma = globalForPrisma.prisma ?? new PrismaClient({ log: logConfig as any }).$extends(withAccelerate())
 
 // Log query events in non-production
-if (shouldLog && prisma.$on) {
+// Note: $on is deprecated in newer Prisma versions, but still works
+if (shouldLog && typeof (prisma as any).$on === 'function') {
   (prisma as any).$on('query', (e: any) => {
     console.log('[Prisma Query]:', {
       query: e.query,
