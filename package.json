@@ -12,6 +12,10 @@
     "test:cucumber": "cross-env TS_NODE_PROJECT=./tsconfig.test.json cucumber-js",
     "test:cucumber:pretty": "cross-env TS_NODE_PROJECT=./tsconfig.test.json cucumber-js --format @cucumber/pretty-formatter",
     "test:cucumber:windows": "cucumber-js",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:studio": "prisma studio"
@@ -33,6 +37,7 @@
   "devDependencies": {
     "@cucumber/cucumber": "^11.3.0",
     "@cucumber/pretty-formatter": "^1.0.1",
+    "@playwright/test": "^1.52.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",

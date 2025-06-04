@@ -20,10 +20,16 @@ npm run build            # Production build
 npm run lint             # Run ESLint
 
 # Testing
-npm run test             # Run Jest unit tests
+nnpm run test             # Run Jest unit tests
 npm run test:watch       # Jest in watch mode
 npm run test:cucumber    # Run Cucumber BDD tests
 npm run test:cucumber:pretty  # Cucumber with readable output
+
+# End-to-End Testing
+npm run test:e2e         # Run Playwright E2E tests
+npm run test:e2e:headed  # E2E tests with visible browser
+npm run test:e2e:ui      # Interactive E2E test runner
+npm run test:e2e:debug   # Debug E2E tests
 ```
 
 To run a single Jest test file:
@@ -58,6 +64,7 @@ The math game follows a configuration-driven pattern:
 ### Testing Strategy
 - **Unit Tests**: Located in `__tests__` folders next to components
 - **BDD Tests**: Cucumber features in `/features` with step definitions in `/features/step_definitions`
+- **E2E Tests**: Playwright tests in `/tests/e2e` for authentication and user flows
 - Tests use mocks for Next.js navigation (`useRouter`, `useSearchParams`)
 
 ### Key Implementation Details
