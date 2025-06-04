@@ -2,7 +2,9 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import AnswerButtons from '../components/AnswerButtons';
+import LeaderboardModal from '../components/LeaderboardModal';
 import { useMathGame } from './useMathGame';
 import { GameType } from './types';
 import { useTranslations } from 'next-intl';
@@ -48,12 +50,15 @@ export default function GameContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const gameType = (searchParams.get('type') as GameType) || GameType.MULTIPLICATION;
+  const { data: session } = useSession();
   
   const [showConfetti, setShowConfetti] = useState(false);
   const [confettiPosition, setConfettiPosition] = useState({ x: 0, y: 0 });
   const [confettiKey, setConfettiKey] = useState(0);
   const [floatingPoints, setFloatingPoints] = useState<FloatingPoint[]>([]);
   const [animatingStarIndex, setAnimatingStarIndex] = useState<number | null>(null);
+  const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
+  const [gameOverData, setGameOverData] = useState<{ score: number; points: number } | null>(null);
   const floatingPointTimers = useRef<Map<number, NodeJS.Timeout>>(new Map());
   const confettiTimers = useRef<NodeJS.Timeout[]>([]);
   const starAnimationTimer = useRef<NodeJS.Timeout | null>(null);
@@ -82,12 +87,11 @@ export default function GameContent() {
     };
   }, []);
 
-  const handleGameOver = useCallback((finalScore: number) => {
-    // Redirect to math page when game is over
-    setTimeout(() => {
-      router.push('/math');
-    }, 1000);
-  }, [router]);
+  const handleGameOver = useCallback((finalScore: number, finalPoints: number) => {
+    // Store game over data and show leaderboard modal
+    setGameOverData({ score: finalScore, points: finalPoints });
+    setShowLeaderboardModal(true);
+  }, []);
 
   const {
     numberOne,
@@ -270,6 +274,21 @@ export default function GameContent() {
           {t('endGame')}
         </button>
       </div>
+
+      {/* Leaderboard Modal */}
+      {session?.user?.id && gameOverData && (
+        <LeaderboardModal
+          isOpen={showLeaderboardModal}
+          onClose={() => {
+            setShowLeaderboardModal(false);
+            router.push('/math');
+          }}
+          gameType={gameType}
+          finalScore={gameOverData.score}
+          finalPoints={gameOverData.points}
+          userId={session.user.id}
+        />
+      )}
     </div>
   );
 }

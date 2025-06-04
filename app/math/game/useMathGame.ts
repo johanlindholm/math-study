@@ -8,7 +8,7 @@ export interface Answer {
 
 interface UseMathGameProps {
   gameType: GameType;
-  onGameOver: (score: number) => void;
+  onGameOver: (score: number, points: number) => void;
 }
 
 export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
@@ -87,7 +87,7 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
       if (newLives <= 0) {
         setTimeout(() => {
           setGameOver(true);
-          onGameOver(score);
+          onGameOver(score, points);
         }, 1500);
       } else {
         // Continue game with new problem after showing correct answer
@@ -98,7 +98,7 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
       }
       return newLives;
     });
-  }, [onGameOver, score, generateNewProblem]);
+  }, [onGameOver, score, points, generateNewProblem]);
 
   // Timer effect
   useEffect(() => {
