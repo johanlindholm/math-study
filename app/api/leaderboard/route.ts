@@ -71,22 +71,47 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    // Find user's position and surrounding scores
-    const userPosition = await prisma.leaderboardEntry.count({
+    // Get all entries for this game type to calculate position properly
+    const allEntries = await prisma.leaderboardEntry.findMany({
+      where: { gameType },
+      orderBy: [
+        { points: 'desc' },
+        { score: 'desc' },
+        { date: 'asc' }
+      ],
+      select: {
+        id: true,
+        points: true,
+        score: true,
+        date: true,
+        userId: true
+      }
+    });
+
+    // Find user's most recent entry to get the exact position
+    const userEntry = await prisma.leaderboardEntry.findFirst({
       where: {
         gameType,
-        OR: [
-          { points: { gt: userPoints } },
-          { 
-            points: userPoints,
-            OR: [
-              { score: { gt: userScore } },
-              { score: userScore, date: { lt: new Date() } }
-            ]
-          }
-        ]
-      }
-    }) + 1;
+        userId: session.user.id,
+        score: userScore,
+        points: userPoints
+      },
+      orderBy: { date: 'desc' }
+    });
+
+    // Calculate position based on entries that are strictly better
+    let userPosition = 1;
+    if (userEntry) {
+      userPosition = allEntries.findIndex(entry => entry.id === userEntry.id) + 1;
+    } else {
+      // Fallback: count entries that are better
+      userPosition = allEntries.filter(entry => {
+        if (entry.points > userPoints) return true;
+        if (entry.points === userPoints && entry.score > userScore) return true;
+        if (entry.points === userPoints && entry.score === userScore && entry.date < new Date()) return true;
+        return false;
+      }).length + 1;
+    }
 
     // Get 3 entries above and below user's position
     const contextEntries = await prisma.leaderboardEntry.findMany({

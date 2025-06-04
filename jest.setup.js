@@ -1,6 +1,48 @@
 // Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
 
+// Polyfill Web APIs needed for Next.js API routes
+import { TextEncoder, TextDecoder } from 'util';
+
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
+
+// Mock fetch for Node.js environment
+global.fetch = jest.fn();
+
+// Mock Request and Response for Next.js API routes
+Object.defineProperty(globalThis, 'Request', {
+  value: class Request {
+    constructor(input, init) {
+      this.url = input;
+      this.method = init?.method || 'GET';
+      this.headers = new Map(Object.entries(init?.headers || {}));
+      this.body = init?.body || null;
+    }
+    
+    async json() {
+      return JSON.parse(this.body);
+    }
+  },
+  writable: true
+});
+
+Object.defineProperty(globalThis, 'Response', {
+  value: class Response {
+    constructor(body, init) {
+      this.body = body;
+      this.status = init?.status || 200;
+      this.statusText = init?.statusText || 'OK';
+      this.headers = new Map(Object.entries(init?.headers || {}));
+    }
+    
+    async json() {
+      return JSON.parse(this.body);
+    }
+  },
+  writable: true
+});
+
 // Mock Next.js router
 jest.mock('next/router', () => ({
   useRouter: () => ({
