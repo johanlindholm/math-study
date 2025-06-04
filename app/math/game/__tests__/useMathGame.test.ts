@@ -189,7 +189,7 @@ describe('useMathGame', () => {
 
       expect(result.current.timeLeft).toBe(0);
       expect(result.current.gameOver).toBe(true);
-      expect(mockOnGameOver).toHaveBeenCalledWith(0);
+      expect(mockOnGameOver).toHaveBeenCalledWith(0, 0); // score, points
     });
 
     it('should stop timer when game is over', () => {
@@ -269,7 +269,7 @@ describe('useMathGame', () => {
       });
 
       expect(result.current.gameOver).toBe(true);
-      expect(mockOnGameOver).toHaveBeenCalledWith(finalScore);
+      expect(mockOnGameOver).toHaveBeenCalledWith(finalScore, expect.any(Number)); // score, points
     });
   });
 
@@ -343,7 +343,7 @@ describe('useMathGame', () => {
       });
 
       expect(result.current.gameOver).toBe(true);
-      expect(mockOnGameOver).toHaveBeenCalledWith(initialScore);
+      expect(mockOnGameOver).toHaveBeenCalledWith(initialScore, expect.any(Number)); // score, points
     });
   });
 });
