@@ -115,28 +115,28 @@ export default function LeaderboardModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
-          <h2 className="text-2xl font-bold text-center mb-4">
+          <h2 className="text-2xl font-bold text-center mb-4 text-gray-900 dark:text-white">
             🎉 Game Complete! 🎉
           </h2>
           
           {saving ? (
             <div className="text-center py-8">
-              <div className="text-lg">Saving your score...</div>
+              <div className="text-lg text-gray-700 dark:text-gray-300">Saving your score...</div>
             </div>
           ) : (
             <>
-              <div className="text-center mb-6 p-4 bg-purple-100 rounded-lg">
-                <h3 className="text-lg font-semibold text-purple-800">Your Performance</h3>
-                <div className="text-3xl font-bold text-purple-600">
+              <div className="text-center mb-6 p-4 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                <h3 className="text-lg font-semibold text-purple-800 dark:text-purple-200">Your Performance</h3>
+                <div className="text-3xl font-bold text-purple-600 dark:text-purple-300">
                   {finalPoints} Points
                 </div>
-                <div className="text-lg text-purple-700">
+                <div className="text-lg text-purple-700 dark:text-purple-300">
                   {finalScore} Questions Correct
                 </div>
                 {leaderboardData && (
-                  <div className="text-sm text-purple-600 mt-2">
+                  <div className="text-sm text-purple-600 dark:text-purple-400 mt-2">
                     Ranked #{leaderboardData.userPosition} in {getGameTypeName(gameType)}
                   </div>
                 )}
@@ -144,38 +144,38 @@ export default function LeaderboardModal({
 
               {loading ? (
                 <div className="text-center py-8">
-                  <div className="text-lg">Loading leaderboard...</div>
+                  <div className="text-lg text-gray-700 dark:text-gray-300">Loading leaderboard...</div>
                 </div>
               ) : leaderboardData ? (
                 <div className="space-y-6">
                   {/* Top 10 Scores */}
                   {leaderboardData.topEntries.length > 0 && (
                     <div>
-                      <h3 className="text-lg font-semibold mb-3">🏆 Top Scores</h3>
+                      <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">🏆 Top Scores</h3>
                       <div className="space-y-2">
                         {leaderboardData.topEntries.map((entry, index) => (
                           <div
                             key={entry.id}
                             className={`flex items-center justify-between p-2 rounded ${
                               entry.user.id === userId 
-                                ? 'bg-yellow-100 border-2 border-yellow-400' 
-                                : 'bg-gray-50'
+                                ? 'bg-yellow-100 dark:bg-yellow-900/30 border-2 border-yellow-400 dark:border-yellow-600' 
+                                : 'bg-gray-50 dark:bg-gray-700'
                             }`}
                           >
                             <div className="flex items-center space-x-3">
-                              <span className="font-bold text-lg w-6">
+                              <span className="font-bold text-lg w-6 text-gray-900 dark:text-white">
                                 {index + 1}.
                               </span>
-                              <span className="font-medium">
+                              <span className="font-medium text-gray-900 dark:text-white">
                                 {entry.user.name || entry.user.email}
                                 {entry.user.id === userId && ' (You)'}
                               </span>
                             </div>
                             <div className="text-right">
-                              <div className="font-bold text-purple-600">
+                              <div className="font-bold text-purple-600 dark:text-purple-300">
                                 {entry.points} pts
                               </div>
-                              <div className="text-sm text-gray-600">
+                              <div className="text-sm text-gray-600 dark:text-gray-400">
                                 {entry.score} correct
                               </div>
                             </div>
@@ -188,7 +188,7 @@ export default function LeaderboardModal({
                   {/* Context around user's score (if not in top 10) */}
                   {leaderboardData.userPosition > 10 && leaderboardData.contextEntries.length > 0 && (
                     <div>
-                      <h3 className="text-lg font-semibold mb-3">
+                      <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
                         📍 Around Your Position (#{leaderboardData.userPosition})
                       </h3>
                       <div className="space-y-2">
@@ -199,24 +199,24 @@ export default function LeaderboardModal({
                               key={entry.id}
                               className={`flex items-center justify-between p-2 rounded ${
                                 entry.user.id === userId 
-                                  ? 'bg-yellow-100 border-2 border-yellow-400' 
-                                  : 'bg-gray-50'
+                                  ? 'bg-yellow-100 dark:bg-yellow-900/30 border-2 border-yellow-400 dark:border-yellow-600' 
+                                  : 'bg-gray-50 dark:bg-gray-700'
                               }`}
                             >
                               <div className="flex items-center space-x-3">
-                                <span className="font-bold text-lg w-8">
+                                <span className="font-bold text-lg w-8 text-gray-900 dark:text-white">
                                   {actualPosition}.
                                 </span>
-                                <span className="font-medium">
+                                <span className="font-medium text-gray-900 dark:text-white">
                                   {entry.user.name || entry.user.email}
                                   {entry.user.id === userId && ' (You)'}
                                 </span>
                               </div>
                               <div className="text-right">
-                                <div className="font-bold text-purple-600">
+                                <div className="font-bold text-purple-600 dark:text-purple-300">
                                   {entry.points} pts
                                 </div>
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-gray-600 dark:text-gray-400">
                                   {entry.score} correct
                                 </div>
                               </div>
@@ -228,7 +228,7 @@ export default function LeaderboardModal({
                   )}
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-600">
+                <div className="text-center py-8 text-gray-600 dark:text-gray-400">
                   Unable to load leaderboard data
                 </div>
               )}
@@ -236,7 +236,7 @@ export default function LeaderboardModal({
               <div className="flex justify-center mt-6">
                 <button
                   onClick={onClose}
-                  className="px-8 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors"
+                  className="px-8 py-3 bg-purple-600 dark:bg-purple-700 text-white font-semibold rounded-lg hover:bg-purple-700 dark:hover:bg-purple-800 transition-colors"
                 >
                   OK
                 </button>

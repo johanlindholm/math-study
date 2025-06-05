@@ -61,8 +61,8 @@ export default function MathPage() {
                 <div className="text-xl">Loading...</div>
             ) : status === 'authenticated' ? (
                 <>
-                    <h1 className="text-4xl font-bold mb-8">Math Games</h1>
-                    <p className="text-xl mb-8 text-center">Select a game mode to start practicing!</p>
+                    <h1 className="text-4xl font-bold mb-8 text-gray-900 dark:text-white">Math Games</h1>
+                    <p className="text-xl mb-8 text-center text-gray-700 dark:text-gray-300">Select a game mode to start practicing!</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
                         {gameModes.map((game) => (
                             <div 
@@ -80,7 +80,7 @@ export default function MathPage() {
                                             Play Now
                                         </button>
                                         <button 
-                                            className="px-6 py-2 bg-white bg-opacity-10 text-white font-medium rounded-full hover:bg-opacity-20 transition-colors w-full border-2 border-white border-opacity-50 hover:border-opacity-70"
+                                            className="px-6 py-2 bg-black/20 hover:bg-black/40 text-white font-medium rounded-full transition-all w-full border-2 border-white/80 hover:border-white shadow-md cursor-pointer"
                                             onClick={() => openHighScores(game.type)}
                                         >
                                             View High Scores
