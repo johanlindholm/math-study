@@ -71,36 +71,36 @@ export default function HighScoreModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
-          <h2 className="text-2xl font-bold text-center mb-4">
+          <h2 className="text-2xl font-bold text-center mb-4 text-gray-900 dark:text-gray-100">
             🏆 High Scores - {getGameTypeName(gameType)}
           </h2>
           
           {loading ? (
             <div className="text-center py-8">
-              <div className="text-lg">Loading high scores...</div>
+              <div className="text-lg text-gray-900 dark:text-gray-100">Loading high scores...</div>
             </div>
           ) : (
             <div className="space-y-6">
               {topEntries.length > 0 ? (
                 <div>
-                  <h3 className="text-lg font-semibold mb-3">🏆 Top Scores</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">🏆 Top Scores</h3>
                   <div className="space-y-2">
                     {topEntries.map((entry, index) => (
                       <div
                         key={entry.id}
                         className={`flex items-center justify-between p-3 rounded ${
                           entry.user.id === userId 
-                            ? 'bg-yellow-100 border-2 border-yellow-400' 
-                            : 'bg-gray-50'
+                            ? 'bg-yellow-100 dark:bg-yellow-900 border-2 border-yellow-400 dark:border-yellow-600' 
+                            : 'bg-gray-50 dark:bg-gray-800'
                         }`}
                       >
                         <div className="flex items-center space-x-3">
-                          <span className="font-bold text-lg w-6">
+                          <span className="font-bold text-lg w-6 text-gray-900 dark:text-gray-100">
                             {index + 1}.
                           </span>
-                          <span className="font-medium">
+                          <span className="font-medium text-gray-900 dark:text-gray-100">
                             {entry.user.name || entry.user.email}
                             {entry.user.id === userId && ' (You)'}
                           </span>
@@ -109,7 +109,7 @@ export default function HighScoreModal({
                           <div className="font-bold text-purple-600">
                             {entry.points} pts
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm text-gray-600 dark:text-gray-400">
                             {entry.score} correct
                           </div>
                         </div>
@@ -118,7 +118,7 @@ export default function HighScoreModal({
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-600">
+                <div className="text-center py-8 text-gray-600 dark:text-gray-400">
                   No high scores yet for {getGameTypeName(gameType)}.
                   <br />
                   Be the first to play and set a record!

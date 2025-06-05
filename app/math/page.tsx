@@ -80,7 +80,7 @@ export default function MathPage() {
                                             Play Now
                                         </button>
                                         <button 
-                                            className="px-6 py-2 bg-white bg-opacity-20 text-white font-medium rounded-full hover:bg-opacity-30 transition-colors w-full border border-white border-opacity-30"
+                                            className="px-6 py-2 bg-white bg-opacity-10 text-white font-medium rounded-full hover:bg-opacity-20 transition-colors w-full border-2 border-white border-opacity-50 hover:border-opacity-70"
                                             onClick={() => openHighScores(game.type)}
                                         >
                                             View High Scores
