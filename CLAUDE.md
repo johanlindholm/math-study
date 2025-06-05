@@ -65,6 +65,11 @@ The math game follows a configuration-driven pattern:
 - **Unit Tests**: Located in `__tests__` folders next to components
 - **BDD Tests**: Cucumber features in `/features` with step definitions in `/features/step_definitions`
 - **E2E Tests**: Playwright tests in `/tests/e2e` for authentication and user flows
+  - Configuration in `playwright.config.ts` with Chrome, Firefox, and Safari browsers
+  - Tests run against `http://localhost:3000` (ensure dev server is running)
+  - Authentication tests in `/tests/e2e/auth.spec.ts`
+  - Uses Playwright's built-in test runner with parallel execution
+  - Supports headed mode for debugging and UI mode for interactive testing
 - Tests use mocks for Next.js navigation (`useRouter`, `useSearchParams`)
 
 ### Key Implementation Details
