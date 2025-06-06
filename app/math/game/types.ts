@@ -167,7 +167,7 @@ export const GAME_CONFIGS: Record<GameType, GameConfig> = {
           return correct + offsets[Math.floor(Math.random() * offsets.length)];
         }
         // Fallback: use larger offset
-        return correct + (Math.random() < 0.5 ? 6 : -6);
+        return correct + (Math.random() < 0.5 ? FALLBACK_OFFSET : -FALLBACK_OFFSET);
       }
       return incorrect;
     },
