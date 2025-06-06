@@ -14,8 +14,16 @@ const customJestConfig = {
     '^@/(.*)$': '<rootDir>/$1',
     // Mock jose and related modules
     '^jose$': '<rootDir>/__mocks__/jose.js',
+    // Mock @panva modules
+    '^@panva/hkdf$': '<rootDir>/__mocks__/panva-hkdf.js',
   },
-  testMatch: ['**/__tests__/**/*.ts?(x)', '**/?(*.)+(spec|test).ts?(x)'],
+  testMatch: [
+    '**/__tests__/**/*.ts?(x)', 
+    '**/?(*.)+(spec|test).ts?(x)'
+  ],
+  testPathIgnorePatterns: [
+    '<rootDir>/tests/e2e/'
+  ],
   transformIgnorePatterns: [
     'node_modules/(?!(jose|@panva)/)',
   ],

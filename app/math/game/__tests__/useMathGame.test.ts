@@ -164,32 +164,36 @@ describe('useMathGame', () => {
       expect(result.current.timeLeft).toBe(9.8);
     });
 
-    it('should trigger game over when timer reaches 0', async () => {
+    it('should trigger game over when timer reaches 0 and all lives are lost', async () => {
       const { result } = renderHook(() => 
         useMathGame({ gameType: GameType.ADDITION, onGameOver: mockOnGameOver })
       );
 
-      act(() => {
-        // Advance timer to almost 0
-        jest.advanceTimersByTime(9900);
-      });
+      // Simulate losing all 3 lives by letting timer run out 3 times
+      for (let life = 0; life < 3; life++) {
+        act(() => {
+          // Advance timer to 0
+          jest.advanceTimersByTime(10000);
+        });
 
-      expect(result.current.timeLeft).toBeCloseTo(0.1);
-      expect(result.current.gameOver).toBe(false);
-
-      act(() => {
-        // Final tick to 0
-        jest.advanceTimersByTime(100);
-      });
-
-      // Wait for shake animation
-      act(() => {
-        jest.advanceTimersByTime(500);
-      });
-
-      expect(result.current.timeLeft).toBe(0);
-      expect(result.current.gameOver).toBe(true);
-      expect(mockOnGameOver).toHaveBeenCalledWith(0, 0); // score, points
+        if (life < 2) {
+          // Should lose a life but continue
+          expect(result.current.lives).toBe(2 - life);
+          expect(result.current.gameOver).toBe(false);
+          
+          // Wait for animation and new problem generation
+          act(() => {
+            jest.advanceTimersByTime(1600); // 1500ms delay + buffer
+          });
+        } else {
+          // Final life lost - should trigger game over
+          act(() => {
+            jest.advanceTimersByTime(1600); // Wait for game over delay
+          });
+          expect(result.current.gameOver).toBe(true);
+          expect(mockOnGameOver).toHaveBeenCalledWith(0, 0); // score, points
+        }
+      }
     });
 
     it('should stop timer when game is over', () => {
@@ -197,11 +201,27 @@ describe('useMathGame', () => {
         useMathGame({ gameType: GameType.ADDITION, onGameOver: mockOnGameOver })
       );
 
+      // Lose all 3 lives to trigger game over
+      for (let i = 0; i < 3; i++) {
+        act(() => {
+          result.current.handleIncorrectAnswer();
+        });
+        
+        if (i < 2) {
+          // Wait for animation between lives
+          act(() => {
+            jest.advanceTimersByTime(1600);
+          });
+        }
+      }
+
+      // Wait for final game over delay
       act(() => {
-        result.current.handleIncorrectAnswer();
-        jest.advanceTimersByTime(500); // Wait for shake animation
+        jest.advanceTimersByTime(1600);
       });
 
+      expect(result.current.gameOver).toBe(true);
+      
       const timeLeftAfterGameOver = result.current.timeLeft;
 
       act(() => {
@@ -244,7 +264,7 @@ describe('useMathGame', () => {
       expect(result.current.timeLeft).toBe(10); // Timer reset
     });
 
-    it('should trigger shake animation and game over on incorrect answer', () => {
+    it('should trigger shake animation and game over when all lives are lost', () => {
       const { result } = renderHook(() => 
         useMathGame({ gameType: GameType.ADDITION, onGameOver: mockOnGameOver })
       );
@@ -257,19 +277,30 @@ describe('useMathGame', () => {
         });
       }
 
-      act(() => {
-        result.current.handleIncorrectAnswer();
-      });
+      // Lose all 3 lives
+      for (let life = 0; life < 3; life++) {
+        act(() => {
+          result.current.handleIncorrectAnswer();
+        });
 
-      expect(result.current.isShaking).toBe(true);
-      expect(result.current.gameOver).toBe(false); // Not yet, waiting for animation
-
-      act(() => {
-        jest.advanceTimersByTime(500);
-      });
-
-      expect(result.current.gameOver).toBe(true);
-      expect(mockOnGameOver).toHaveBeenCalledWith(finalScore, expect.any(Number)); // score, points
+        expect(result.current.isShaking).toBe(true);
+        
+        if (life < 2) {
+          // Should lose a life but continue
+          expect(result.current.gameOver).toBe(false);
+          act(() => {
+            jest.advanceTimersByTime(1600); // Wait for animation and new problem
+          });
+        } else {
+          // Final life lost - should trigger game over
+          expect(result.current.gameOver).toBe(false); // Not yet, waiting for animation
+          act(() => {
+            jest.advanceTimersByTime(1600); // Wait for game over delay
+          });
+          expect(result.current.gameOver).toBe(true);
+          expect(mockOnGameOver).toHaveBeenCalledWith(finalScore, expect.any(Number)); // score, points
+        }
+      }
     });
   });
 
@@ -336,11 +367,22 @@ describe('useMathGame', () => {
       expect(result.current.score).toBe(initialScore);
       expect(result.current.gameOver).toBe(false);
 
-      // Trigger game over
-      act(() => {
-        result.current.handleIncorrectAnswer();
-        jest.advanceTimersByTime(500);
-      });
+      // Trigger game over by losing all lives
+      for (let life = 0; life < 3; life++) {
+        act(() => {
+          result.current.handleIncorrectAnswer();
+        });
+        
+        if (life < 2) {
+          act(() => {
+            jest.advanceTimersByTime(1600);
+          });
+        } else {
+          act(() => {
+            jest.advanceTimersByTime(1600);
+          });
+        }
+      }
 
       expect(result.current.gameOver).toBe(true);
       expect(mockOnGameOver).toHaveBeenCalledWith(initialScore, expect.any(Number)); // score, points
