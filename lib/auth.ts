@@ -1,6 +1,5 @@
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 
@@ -10,8 +9,12 @@ const shouldLog = process.env.NODE_ENV === 'development' ||
                   process.env.VERCEL_ENV === 'development'
 
 export const authOptions: NextAuthOptions = {
+<<<<<<< Updated upstream
   debug: shouldLog,
   adapter: PrismaAdapter(prisma) as any,
+=======
+  // Remove adapter for JWT strategy - it's only needed for database sessions
+>>>>>>> Stashed changes
   providers: [
     CredentialsProvider({
       name: "credentials",

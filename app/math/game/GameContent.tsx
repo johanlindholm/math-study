@@ -59,6 +59,7 @@ export default function GameContent() {
   const [animatingStarIndex, setAnimatingStarIndex] = useState<number | null>(null);
   const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
   const [gameOverData, setGameOverData] = useState<{ score: number; points: number } | null>(null);
+  const [previousLevel, setPreviousLevel] = useState(1);
   const floatingPointTimers = useRef<Map<number, NodeJS.Timeout>>(new Map());
   const confettiTimers = useRef<NodeJS.Timeout[]>([]);
   const starAnimationTimer = useRef<NodeJS.Timeout | null>(null);
@@ -93,6 +94,39 @@ export default function GameContent() {
     setShowLeaderboardModal(true);
   }, []);
 
+  // Track level changes and trigger confetti on level up
+  useEffect(() => {
+    if (level > previousLevel) {
+      // Level increased! Show confetti from center of screen
+      const centerX = typeof window !== 'undefined' ? window.innerWidth / 2 : 0;
+      const centerY = typeof window !== 'undefined' ? window.innerHeight / 2 : 0;
+      
+      setConfettiPosition({
+        x: centerX,
+        y: centerY
+      });
+
+      // Trigger confetti animation
+      if (showConfetti) {
+        setShowConfetti(false);
+        setConfettiKey(prev => prev + 1);
+        const timer1 = setTimeout(() => {
+          setShowConfetti(true);
+        }, 50);
+        confettiTimers.current.push(timer1);
+      } else {
+        setShowConfetti(true);
+      }
+
+      // Hide confetti after animation
+      const timer2 = setTimeout(() => {
+        setShowConfetti(false);
+      }, 3000); // Longer duration for level up
+      confettiTimers.current.push(timer2);
+    }
+    setPreviousLevel(level);
+  }, [level, previousLevel, showConfetti]);
+
   const {
     numberOne,
     numberTwo,
@@ -118,11 +152,6 @@ export default function GameContent() {
     const rect = button.getBoundingClientRect();
     const centerX = rect.x + rect.width / 2;
     const centerY = rect.y + rect.height / 2;
-    
-    setConfettiPosition({
-      x: centerX,
-      y: centerY
-    });
 
     // Add floating points indicator
     const pointsEarned = Math.round(timeLeft);
@@ -143,27 +172,9 @@ export default function GameContent() {
     
     floatingPointTimers.current.set(newFloatingPoint.id, timerId);
 
-    // Trigger confetti animation
-    if (showConfetti) {
-      setShowConfetti(false);
-      setConfettiKey(prev => prev + 1);
-      const timer1 = setTimeout(() => {
-        setShowConfetti(true);
-      }, 50);
-      confettiTimers.current.push(timer1);
-    } else {
-      setShowConfetti(true);
-    }
-
-    // Hide confetti after animation
-    const timer2 = setTimeout(() => {
-      setShowConfetti(false);
-    }, 1500);
-    confettiTimers.current.push(timer2);
-
     // Call the original handler
     onCorrectAnswer();
-  }, [onCorrectAnswer, showConfetti, timeLeft]);
+  }, [onCorrectAnswer, timeLeft]);
 
   const handleIncorrectAnswer = useCallback(() => {
     // Animate the star that will be lost
@@ -198,16 +209,17 @@ export default function GameContent() {
           width={typeof window !== 'undefined' ? window.innerWidth : 0}
           height={typeof window !== 'undefined' ? window.innerHeight : 0}
           recycle={false}
-          numberOfPieces={200}
+          numberOfPieces={300}
           confettiSource={{
             x: confettiPosition.x,
             y: confettiPosition.y,
-            w: 0,
-            h: 0
+            w: 400,
+            h: 400
           }}
-          initialVelocityY={20}
-          gravity={0.5}
-          tweenDuration={100}
+          initialVelocityX={30}
+          initialVelocityY={30}
+          gravity={0.3}
+          tweenDuration={2000}
         />
       )}
       {floatingPoints.map((point) => (

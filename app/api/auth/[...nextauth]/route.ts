@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { NextRequest, NextResponse } from "next/server"
 import NextAuth from "next-auth"
 import { authOptions } from "@/lib/auth"
@@ -95,3 +96,13 @@ export async function POST(
 ) {
   return handleAuthRequest(request, params, "POST")
 }
+=======
+import { authOptions } from "@/lib/auth"
+import NextAuth from "next-auth"
+
+// Create handler for each HTTP method
+const handler = NextAuth(authOptions)
+
+export const GET = handler
+export const POST = handler
+>>>>>>> Stashed changes
