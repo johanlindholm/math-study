@@ -139,7 +139,8 @@ export async function GET(request: NextRequest) {
       userPosition,
       contextEntries,
       userScore,
-      userPoints
+      userPoints,
+      newEntryId: userEntry?.id
     });
   } catch (error) {
     console.error('Error fetching leaderboard:', error);

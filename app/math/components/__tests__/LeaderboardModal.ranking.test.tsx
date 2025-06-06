@@ -2,7 +2,7 @@
  * Test for LeaderboardModal component to ensure it displays rankings correctly
  */
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import LeaderboardModal from '../LeaderboardModal';
 import { GameType } from '@/app/math/game/types';
 
@@ -43,20 +43,23 @@ describe('LeaderboardModal Ranking Display', () => {
         userPosition: 1, // This should be 1, not 2!
         contextEntries: [],
         userScore: 2,
-        userPoints: 18
+        userPoints: 18,
+        newEntryId: 'entry1'
       })
     } as Response);
 
-    render(
-      <LeaderboardModal
-        isOpen={true}
-        onClose={() => {}}
-        gameType={GameType.ADDITION}
-        finalScore={2}
-        finalPoints={18}
-        userId="user1"
-      />
-    );
+    act(() => {
+      render(
+        <LeaderboardModal
+          isOpen={true}
+          onClose={() => {}}
+          gameType={GameType.ADDITION}
+          finalScore={2}
+          finalPoints={18}
+          userId="user1"
+        />
+      );
+    });
 
     // Wait for the leaderboard to load
     await waitFor(() => {
@@ -111,20 +114,23 @@ describe('LeaderboardModal Ranking Display', () => {
         userPosition: 2,
         contextEntries: [],
         userScore: 2,
-        userPoints: 18
+        userPoints: 18,
+        newEntryId: 'entry2'
       })
     } as Response);
 
-    render(
-      <LeaderboardModal
-        isOpen={true}
-        onClose={() => {}}
-        gameType={GameType.ADDITION}
-        finalScore={2}
-        finalPoints={18}
-        userId="user1"
-      />
-    );
+    act(() => {
+      render(
+        <LeaderboardModal
+          isOpen={true}
+          onClose={() => {}}
+          gameType={GameType.ADDITION}
+          finalScore={2}
+          finalPoints={18}
+          userId="user1"
+        />
+      );
+    });
 
     // Wait for the leaderboard to load
     await waitFor(() => {
@@ -158,20 +164,23 @@ describe('LeaderboardModal Ranking Display', () => {
         userPosition: 1,
         contextEntries: [],
         userScore: 2,
-        userPoints: 18
+        userPoints: 18,
+        newEntryId: 'entry1'
       })
     } as Response);
 
-    render(
-      <LeaderboardModal
-        isOpen={true}
-        onClose={() => {}}
-        gameType={GameType.ADDITION}
-        finalScore={2}
-        finalPoints={18}
-        userId="user1"
-      />
-    );
+    act(() => {
+      render(
+        <LeaderboardModal
+          isOpen={true}
+          onClose={() => {}}
+          gameType={GameType.ADDITION}
+          finalScore={2}
+          finalPoints={18}
+          userId="user1"
+        />
+      );
+    });
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledTimes(2);
@@ -200,16 +209,18 @@ describe('LeaderboardModal Ranking Display', () => {
     // Mock failed POST response
     mockFetch.mockRejectedValueOnce(new Error('API Error'));
 
-    render(
-      <LeaderboardModal
-        isOpen={true}
-        onClose={() => {}}
-        gameType={GameType.ADDITION}
-        finalScore={2}
-        finalPoints={18}
-        userId="user1"
-      />
-    );
+    act(() => {
+      render(
+        <LeaderboardModal
+          isOpen={true}
+          onClose={() => {}}
+          gameType={GameType.ADDITION}
+          finalScore={2}
+          finalPoints={18}
+          userId="user1"
+        />
+      );
+    });
 
     // Should still show user's performance even if leaderboard fails
     await waitFor(() => {

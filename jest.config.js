@@ -12,8 +12,13 @@ const customJestConfig = {
   moduleNameMapper: {
     // Handle module aliases (if you have them in tsconfig.json)
     '^@/(.*)$': '<rootDir>/$1',
+    // Mock jose and related modules
+    '^jose$': '<rootDir>/__mocks__/jose.js',
   },
   testMatch: ['**/__tests__/**/*.ts?(x)', '**/?(*.)+(spec|test).ts?(x)'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(jose|@panva)/)',
+  ],
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

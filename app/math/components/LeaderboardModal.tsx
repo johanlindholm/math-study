@@ -20,6 +20,7 @@ interface LeaderboardData {
   contextEntries: LeaderboardEntry[];
   userScore: number;
   userPoints: number;
+  newEntryId?: string;
 }
 
 interface LeaderboardModalProps {
@@ -157,8 +158,10 @@ export default function LeaderboardModal({
                           <div
                             key={entry.id}
                             className={`flex items-center justify-between p-2 rounded ${
-                              entry.user.id === userId 
+                              entry.id === leaderboardData.newEntryId
                                 ? 'bg-yellow-100 dark:bg-yellow-900/30 border-2 border-yellow-400 dark:border-yellow-600' 
+                                : entry.user.id === userId
+                                ? 'bg-blue-50 dark:bg-blue-900/30'
                                 : 'bg-gray-50 dark:bg-gray-700'
                             }`}
                           >
@@ -198,8 +201,10 @@ export default function LeaderboardModal({
                             <div
                               key={entry.id}
                               className={`flex items-center justify-between p-2 rounded ${
-                                entry.user.id === userId 
+                                entry.id === leaderboardData.newEntryId
                                   ? 'bg-yellow-100 dark:bg-yellow-900/30 border-2 border-yellow-400 dark:border-yellow-600' 
+                                  : entry.user.id === userId
+                                  ? 'bg-blue-50 dark:bg-blue-900/30'
                                   : 'bg-gray-50 dark:bg-gray-700'
                               }`}
                             >
