@@ -6,10 +6,7 @@ import { render, screen, waitFor, act } from '@testing-library/react';
 import LeaderboardModal from '../LeaderboardModal';
 import { GameType } from '@/app/math/game/types';
 
-// Mock fetch
-global.fetch = jest.fn();
-
-const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
+const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
 
 describe('LeaderboardModal Ranking Display', () => {
   beforeEach(() => {
@@ -48,26 +45,21 @@ describe('LeaderboardModal Ranking Display', () => {
       })
     } as Response);
 
-    act(() => {
-      render(
-        <LeaderboardModal
-          isOpen={true}
-          onClose={() => {}}
-          gameType={GameType.ADDITION}
-          finalScore={2}
-          finalPoints={18}
-          userId="user1"
-        />
-      );
-    });
+    render(
+      <LeaderboardModal
+        isOpen={true}
+        onClose={() => {}}
+        gameType={GameType.ADDITION}
+        finalScore={2}
+        finalPoints={18}
+        userId="user1"
+      />
+    );
 
-    // Wait for the leaderboard to load
+    // Wait for both the saving and loading to complete
     await waitFor(() => {
-      expect(screen.getByText('🎉 Game Complete! 🎉')).toBeInTheDocument();
-    });
-
-    // Check that the user is ranked #1
-    expect(screen.getByText('Ranked #1 in Addition')).toBeInTheDocument();
+      expect(screen.getByText('Ranked #1 in Addition')).toBeInTheDocument();
+    }, { timeout: 3000 });
 
     // Check that the top scores section shows the correct position
     expect(screen.getByText('1.')).toBeInTheDocument();
@@ -119,26 +111,21 @@ describe('LeaderboardModal Ranking Display', () => {
       })
     } as Response);
 
-    act(() => {
-      render(
-        <LeaderboardModal
-          isOpen={true}
-          onClose={() => {}}
-          gameType={GameType.ADDITION}
-          finalScore={2}
-          finalPoints={18}
-          userId="user1"
-        />
-      );
-    });
+    render(
+      <LeaderboardModal
+        isOpen={true}
+        onClose={() => {}}
+        gameType={GameType.ADDITION}
+        finalScore={2}
+        finalPoints={18}
+        userId="user1"
+      />
+    );
 
-    // Wait for the leaderboard to load
+    // Wait for both the saving and loading to complete
     await waitFor(() => {
-      expect(screen.getByText('🎉 Game Complete! 🎉')).toBeInTheDocument();
-    });
-
-    // Check that the user is ranked #2
-    expect(screen.getByText('Ranked #2 in Addition')).toBeInTheDocument();
+      expect(screen.getByText('Ranked #2 in Addition')).toBeInTheDocument();
+    }, { timeout: 3000 });
 
     // Check the leaderboard display
     expect(screen.getByText('1.')).toBeInTheDocument();

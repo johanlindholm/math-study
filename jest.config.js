@@ -14,6 +14,8 @@ const customJestConfig = {
     '^@/(.*)$': '<rootDir>/$1',
     // Mock jose and related modules
     '^jose$': '<rootDir>/__mocks__/jose.js',
+    // Mock @panva modules
+    '^@panva/hkdf$': '<rootDir>/__mocks__/panva-hkdf.js',
   },
   testMatch: [
     '**/__tests__/**/*.ts?(x)', 
