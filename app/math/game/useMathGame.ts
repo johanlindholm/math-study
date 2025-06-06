@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { GameType, GAME_CONFIGS } from './types';
+import { GameType, GAME_CONFIGS, getCurrentLevel, getDifficultyForLevel } from './types';
 
 export interface Answer {
   value: number;
@@ -54,12 +54,43 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
   }, [score, generateIncorrectResult, config]);
 
   const generateNewProblem = useCallback(() => {
-    let num1 = Math.floor(Math.random() * 10) + 1;
-    let num2 = Math.floor(Math.random() * 10) + 1;
+    const currentLevel = getCurrentLevel(score);
+    const difficulty = getDifficultyForLevel(currentLevel, gameType);
     
-    // For subtraction, ensure num1 >= num2 to always have positive results
-    if (gameType === GameType.SUBTRACTION && num1 < num2) {
-      [num1, num2] = [num2, num1]; // Swap numbers
+    let num1 = 0;
+    let num2 = 0;
+    
+    switch (gameType) {
+      case GameType.MULTIPLICATION: {
+        const multiDifficulty = difficulty as { tables: number[] };
+        // Pick a random table from available ones
+        const table = multiDifficulty.tables[Math.floor(Math.random() * multiDifficulty.tables.length)];
+        num1 = table;
+        // For multiplication, num2 is between 1 and 10
+        num2 = Math.floor(Math.random() * 10) + 1;
+        break;
+      }
+      
+      case GameType.ADDITION: {
+        const addDifficulty = difficulty as { range: { min: number; max: number } };
+        const range = addDifficulty.range.max - addDifficulty.range.min;
+        num1 = Math.floor(Math.random() * range) + addDifficulty.range.min;
+        num2 = Math.floor(Math.random() * range) + addDifficulty.range.min;
+        break;
+      }
+      
+      case GameType.SUBTRACTION: {
+        const subDifficulty = difficulty as { range: { min: number; max: number }; allowNegative: boolean };
+        const range = subDifficulty.range.max - subDifficulty.range.min;
+        num1 = Math.floor(Math.random() * range) + subDifficulty.range.min;
+        num2 = Math.floor(Math.random() * range) + subDifficulty.range.min;
+        
+        // If negative results aren't allowed, ensure num1 >= num2
+        if (!subDifficulty.allowNegative && num1 < num2) {
+          [num1, num2] = [num2, num1]; // Swap numbers
+        }
+        break;
+      }
     }
     
     setNumberOne(num1);
@@ -70,7 +101,7 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
     setIsBlinking(true);
     setShowCorrect(false);
     setTimeout(() => setIsBlinking(false), 300);
-  }, [generateAnswers, config, gameType]);
+  }, [generateAnswers, config, gameType, score]);
 
   const handleCorrectAnswer = useCallback(() => {
     setScore(prev => prev + 1);
@@ -130,6 +161,8 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const level = getCurrentLevel(score);
+
   return {
     numberOne,
     numberTwo,
@@ -146,5 +179,6 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
     handleCorrectAnswer,
     handleIncorrectAnswer,
     symbol: config.symbol,
+    level,
   };
 };

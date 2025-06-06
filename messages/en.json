@@ -15,6 +15,7 @@
   "GamePage": {
     "score": "Score",
     "points": "Points",
+    "level": "Level",
     "endGame": "End Game",
     "metaTitle": "Math Game - Learning App",
     "metaDescription": "Interactive math game for learning and practice",
