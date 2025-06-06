@@ -15,6 +15,7 @@
   "GamePage": {
     "score": "Puntuación",
     "points": "Puntos",
+    "level": "Nivel",
     "endGame": "Finalizar Juego",
     "metaTitle": "Juego de Matemáticas - Aplicación de Aprendizaje",
     "metaDescription": "Juego interactivo de matemáticas para aprender y practicar",

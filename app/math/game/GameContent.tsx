@@ -105,6 +105,7 @@ export default function GameContent() {
     symbol,
     lives,
     showCorrect,
+    level,
     handleCorrectAnswer: onCorrectAnswer,
     handleIncorrectAnswer: onIncorrectAnswer,
   } = useMathGame({
@@ -245,6 +246,9 @@ export default function GameContent() {
         <div className="text-2xl font-semibold text-gray-600">
           {t('score')}: {score}
         </div>
+      </div>
+      <div className="text-center mb-4">
+        <h2 className="text-3xl font-bold text-gray-700">{t('level')} {level}</h2>
       </div>
       <div className="w-full max-w-xl px-4 mb-8">
         <div className="w-full bg-gray-200 rounded-full h-4">
