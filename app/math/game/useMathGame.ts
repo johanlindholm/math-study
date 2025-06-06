@@ -32,9 +32,9 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
     return config.generateIncorrectAnswer(num1, num2, correct, existingResults);
   }, [config]);
 
-  const generateAnswers = useCallback((num1: number, num2: number) => {
+  const generateAnswers = useCallback((num1: number, num2: number, currentScore: number) => {
     const correctResult = config.operation(num1, num2);
-    const numAnswers = Math.min(2 + Math.floor(score / 5), 4);
+    const numAnswers = Math.min(2 + Math.floor(currentScore / 5), 4);
 
     const answers: Answer[] = [
       { value: correctResult, isCorrect: true }
@@ -51,10 +51,10 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
 
     // Shuffle the answers
     return answers.sort(() => Math.random() - 0.5);
-  }, [score, generateIncorrectResult, config]);
+  }, [generateIncorrectResult, config]);
 
-  const generateNewProblem = useCallback(() => {
-    const currentLevel = getCurrentLevel(score);
+  const generateNewProblem = useCallback((currentScore: number = score) => {
+    const currentLevel = getCurrentLevel(currentScore);
     const difficulty = getDifficultyForLevel(currentLevel, gameType);
     
     let num1 = 0;
@@ -96,7 +96,7 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
     setNumberOne(num1);
     setNumberTwo(num2);
     setResult(config.operation(num1, num2));
-    setAnswers(generateAnswers(num1, num2));
+    setAnswers(generateAnswers(num1, num2, currentScore));
     setTimeLeft(10);
     setIsBlinking(true);
     setShowCorrect(false);
@@ -104,10 +104,14 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
   }, [generateAnswers, config, gameType, score]);
 
   const handleCorrectAnswer = useCallback(() => {
-    setScore(prev => prev + 1);
+    setScore(prev => {
+      const newScore = prev + 1;
+      // Generate new problem with updated score
+      generateNewProblem(newScore);
+      return newScore;
+    });
     // Award points based on remaining time (rounded to nearest integer)
     setPoints(prev => prev + Math.round(timeLeft));
-    generateNewProblem();
   }, [generateNewProblem, timeLeft]);
 
   const handleIncorrectAnswer = useCallback(() => {
@@ -123,7 +127,10 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
       } else {
         // Continue game with new problem after showing correct answer
         setTimeout(() => {
-          generateNewProblem();
+          setScore(currentScore => {
+            generateNewProblem(currentScore);
+            return currentScore;
+          });
           setIsShaking(false);
         }, 1500);
       }
@@ -157,7 +164,7 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
 
   // Initialize game
   useEffect(() => {
-    generateNewProblem();
+    generateNewProblem(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
