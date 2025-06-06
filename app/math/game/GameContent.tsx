@@ -37,6 +37,12 @@ const animations = `
   25% { transform: scale(0.8) rotate(-10deg); }
   75% { transform: scale(0.8) rotate(10deg); }
 }
+
+@keyframes levelBounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
 `;
 
 interface FloatingPoint {
@@ -55,8 +61,10 @@ export default function GameContent() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [confettiPosition, setConfettiPosition] = useState({ x: 0, y: 0 });
   const [confettiKey, setConfettiKey] = useState(0);
+  const [confettiOpacity, setConfettiOpacity] = useState(1);
   const [floatingPoints, setFloatingPoints] = useState<FloatingPoint[]>([]);
   const [animatingStarIndex, setAnimatingStarIndex] = useState<number | null>(null);
+  const [isLevelAnimating, setIsLevelAnimating] = useState(false);
   const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
   const [gameOverData, setGameOverData] = useState<{ score: number; points: number } | null>(null);
   const [previousLevel, setPreviousLevel] = useState(1);
@@ -94,39 +102,6 @@ export default function GameContent() {
     setShowLeaderboardModal(true);
   }, []);
 
-  // Track level changes and trigger confetti on level up
-  useEffect(() => {
-    if (level > previousLevel) {
-      // Level increased! Show confetti from center of screen
-      const centerX = typeof window !== 'undefined' ? window.innerWidth / 2 : 0;
-      const centerY = typeof window !== 'undefined' ? window.innerHeight / 2 : 0;
-      
-      setConfettiPosition({
-        x: centerX,
-        y: centerY
-      });
-
-      // Trigger confetti animation
-      if (showConfetti) {
-        setShowConfetti(false);
-        setConfettiKey(prev => prev + 1);
-        const timer1 = setTimeout(() => {
-          setShowConfetti(true);
-        }, 50);
-        confettiTimers.current.push(timer1);
-      } else {
-        setShowConfetti(true);
-      }
-
-      // Hide confetti after animation
-      const timer2 = setTimeout(() => {
-        setShowConfetti(false);
-      }, 3000); // Longer duration for level up
-      confettiTimers.current.push(timer2);
-    }
-    setPreviousLevel(level);
-  }, [level, previousLevel, showConfetti]);
-
   const {
     numberOne,
     numberTwo,
@@ -146,6 +121,56 @@ export default function GameContent() {
     gameType,
     onGameOver: handleGameOver,
   });
+
+  // Track level changes and trigger confetti on level up
+  useEffect(() => {
+    if (level > previousLevel) {
+      // Level increased! Trigger level animation
+      setIsLevelAnimating(true);
+      
+      // Stop level animation after bounce completes
+      const levelAnimTimer = setTimeout(() => {
+        setIsLevelAnimating(false);
+      }, 600); // Animation duration
+      confettiTimers.current.push(levelAnimTimer);
+      
+      // Show confetti from center of screen
+      const centerX = typeof window !== 'undefined' ? window.innerWidth / 2 : 0;
+      const centerY = typeof window !== 'undefined' ? window.innerHeight / 2 : 0;
+      
+      setConfettiPosition({
+        x: centerX,
+        y: centerY
+      });
+
+      // Trigger confetti animation
+      if (showConfetti) {
+        setShowConfetti(false);
+        setConfettiKey(prev => prev + 1);
+        const timer1 = setTimeout(() => {
+          setShowConfetti(true);
+          setConfettiOpacity(1);
+        }, 50);
+        confettiTimers.current.push(timer1);
+      } else {
+        setShowConfetti(true);
+        setConfettiOpacity(1);
+      }
+
+      // Start fade out after 1 second
+      const fadeTimer = setTimeout(() => {
+        setConfettiOpacity(0);
+      }, 1000);
+      confettiTimers.current.push(fadeTimer);
+
+      // Hide confetti after fade completes
+      const timer2 = setTimeout(() => {
+        setShowConfetti(false);
+      }, 2000); // Match tween duration
+      confettiTimers.current.push(timer2);
+    }
+    setPreviousLevel(level);
+  }, [level, previousLevel, showConfetti]);
 
   const handleCorrectAnswer = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     const button = event.currentTarget;
@@ -204,23 +229,40 @@ export default function GameContent() {
     <div className="flex flex-col items-center justify-center h-screen">
       <style jsx global>{animations}</style>
       {showConfetti && (
-        <Confetti 
-          key={confettiKey}
-          width={typeof window !== 'undefined' ? window.innerWidth : 0}
-          height={typeof window !== 'undefined' ? window.innerHeight : 0}
-          recycle={false}
-          numberOfPieces={300}
-          confettiSource={{
-            x: confettiPosition.x,
-            y: confettiPosition.y,
-            w: 400,
-            h: 400
+        <div 
+          style={{ 
+            opacity: confettiOpacity,
+            transition: 'opacity 1s ease-out',
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'none',
+            zIndex: 1000
           }}
-          initialVelocityX={30}
-          initialVelocityY={30}
-          gravity={0.3}
-          tweenDuration={2000}
-        />
+        >
+          <Confetti 
+            key={confettiKey}
+            width={typeof window !== 'undefined' ? window.innerWidth : 0}
+            height={typeof window !== 'undefined' ? window.innerHeight : 0}
+            recycle={false}
+            numberOfPieces={400}
+            confettiSource={{
+              x: confettiPosition.x - 400,
+              y: confettiPosition.y - 150,
+              w: 800,
+              h: 300
+            }}
+            initialVelocityX={12}
+            initialVelocityY={20}
+            gravity={0.2}
+            tweenDuration={2000}
+            opacity={1}
+            wind={0.02}
+            friction={0.95}
+          />
+        </div>
       )}
       {floatingPoints.map((point) => (
         <div
@@ -260,7 +302,14 @@ export default function GameContent() {
         </div>
       </div>
       <div className="text-center mb-4">
-        <h2 className="text-3xl font-bold text-gray-700">{t('level')} {level}</h2>
+        <h2 
+          className="text-3xl font-bold text-yellow-500 dark:text-yellow-400"
+          style={{
+            animation: isLevelAnimating ? 'levelBounce 0.6s ease-in-out' : 'none'
+          }}
+        >
+          {t('level')} {level}
+        </h2>
       </div>
       <div className="w-full max-w-xl px-4 mb-8">
         <div className="w-full bg-gray-200 rounded-full h-4">
