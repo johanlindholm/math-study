@@ -121,6 +121,9 @@ type GameConfig = {
   generateIncorrectAnswer: (a: number, b: number, correct: number, existing: number[]) => number;
 };
 
+// Constant for fallback offset when all other offsets are taken
+const FALLBACK_OFFSET = 6;
+
 export const GAME_CONFIGS: Record<GameType, GameConfig> = {
   [GameType.MULTIPLICATION]: {
     operation: (a, b) => a * b,
