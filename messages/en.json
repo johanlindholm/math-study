@@ -23,6 +23,7 @@
       "multiplication": "Multiplication",
       "addition": "Addition",
       "subtraction": "Subtraction",
+      "division": "Division",
       "game": "Game"
     }
   },

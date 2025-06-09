@@ -52,6 +52,13 @@ export default function MathPage() {
             description: 'Practice your subtraction skills!',
             bgColor: 'bg-green-500',
             hoverBgColor: 'hover:bg-green-600'
+        },
+        {
+            type: GameType.DIVISION,
+            title: 'Division',
+            description: 'Practice your division skills!',
+            bgColor: 'bg-yellow-500',
+            hoverBgColor: 'hover:bg-yellow-600'
         }
     ];
 
