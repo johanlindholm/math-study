@@ -151,7 +151,6 @@ export const GAME_CONFIGS: Record<GameType, GameConfig> = {
       if (offset === 0) offset = 1;
 
       let incorrect = modifyFirst ? (a + offset) * b : a * (b + offset);
-
       if (incorrect === correct || existing.includes(incorrect)) {
         return incorrect + (Math.random() < 0.5 ? 1 : -1) * (Math.floor(Math.random() * 3) + 1);
       }
@@ -164,7 +163,6 @@ export const GAME_CONFIGS: Record<GameType, GameConfig> = {
     generateIncorrectAnswer: (a, b, correct, existing) => {
       let offset = Math.floor(Math.random() * 5) + 1; // 1-5
       if (Math.random() < 0.5) offset *= -1;
-
       let incorrect = correct + offset;
       if (existing.includes(incorrect) || incorrect < 0) {
         return correct + (Math.random() < 0.5 ? 1 : -1) * (Math.floor(Math.random() * 5) + 1);
@@ -178,7 +176,6 @@ export const GAME_CONFIGS: Record<GameType, GameConfig> = {
     generateIncorrectAnswer: (a, b, correct, existing) => {
       let offset = Math.floor(Math.random() * 5) + 1; // 1-5
       if (Math.random() < 0.5) offset *= -1;
-
       let incorrect = correct + offset;
       if (existing.includes(incorrect)) {
         // Generate a different offset to avoid duplicates

@@ -44,10 +44,11 @@ describe('MathPage', () => {
     expect(screen.getByText('Multiplication')).toBeInTheDocument();
     expect(screen.getByText('Addition')).toBeInTheDocument();
     expect(screen.getByText('Subtraction')).toBeInTheDocument();
+    expect(screen.getByText('Division')).toBeInTheDocument();
     
     // Check that play buttons are rendered
     const playButtons = screen.getAllByText('Play Now');
-    expect(playButtons).toHaveLength(3);
+    expect(playButtons).toHaveLength(4);
   });
 
   it('renders high score buttons for each game mode', () => {
@@ -55,7 +56,7 @@ describe('MathPage', () => {
     
     // Check that high score buttons are rendered
     const highScoreButtons = screen.getAllByText('View High Scores');
-    expect(highScoreButtons).toHaveLength(3);
+    expect(highScoreButtons).toHaveLength(4);
   });
 
   it('displays correct descriptions for each game mode', () => {
@@ -65,5 +66,6 @@ describe('MathPage', () => {
     expect(screen.getByText('Practice your multiplication skills!')).toBeInTheDocument();
     expect(screen.getByText('Practice your addition skills!')).toBeInTheDocument();
     expect(screen.getByText('Practice your subtraction skills!')).toBeInTheDocument();
+    expect(screen.getByText('Practice your division skills!')).toBeInTheDocument();
   });
 });
