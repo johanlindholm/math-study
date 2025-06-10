@@ -223,6 +223,7 @@ export default function GameContent() {
     [GameType.MULTIPLICATION]: t('gameTypes.multiplication'),
     [GameType.ADDITION]: t('gameTypes.addition'),
     [GameType.SUBTRACTION]: t('gameTypes.subtraction'),
+    [GameType.DIVISION]: t('gameTypes.division'),
   };
 
   return (

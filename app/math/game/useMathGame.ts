@@ -91,6 +91,25 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
         }
         break;
       }
+
+      case GameType.DIVISION: {
+        const divDifficulty = difficulty as {
+        dividendRange: { min: number; max: number };
+        divisorRange: { min: number; max: number };
+        };
+
+        // Choose divisor (num2) first
+        num2 = Math.floor(Math.random() * (divDifficulty.divisorRange.max - divDifficulty.divisorRange.min + 1)) + divDifficulty.divisorRange.min;
+
+        // Generate a dividend (num1) that is divisible by num2
+        const quotientMin = Math.floor(divDifficulty.dividendRange.min / num2);
+        const quotientMax = Math.floor(divDifficulty.dividendRange.max / num2);
+
+        // Ensure quotient is at least 1 (avoid quotient = 0)
+        const quotient = Math.max(1, Math.floor(Math.random() * (quotientMax - quotientMin + 1)) + quotientMin);
+        num1 = quotient * num2;
+        break;
+      }
     }
     
     setNumberOne(num1);
