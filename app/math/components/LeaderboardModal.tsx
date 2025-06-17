@@ -107,7 +107,8 @@ export default function LeaderboardModal({
     const names = {
       [GameType.MULTIPLICATION]: 'Multiplication',
       [GameType.ADDITION]: 'Addition',
-      [GameType.SUBTRACTION]: 'Subtraction'
+      [GameType.SUBTRACTION]: 'Subtraction',
+      [GameType.DIVISION]: 'Division'
     };
     return names[type];
   };
