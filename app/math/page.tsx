@@ -37,6 +37,7 @@ export default function MathPage() {
             title: 'Multiplication',
             description: 'Practice your multiplication skills!',
             bgColor: 'bg-purple-500',
+            textColor: 'text-purple-500',
             hoverBgColor: 'hover:bg-purple-600'
         },
         {
@@ -44,6 +45,7 @@ export default function MathPage() {
             title: 'Addition',
             description: 'Practice your addition skills!',
             bgColor: 'bg-blue-500',
+            textColor: 'text-blue-500',
             hoverBgColor: 'hover:bg-blue-600'
         },
         {
@@ -51,6 +53,7 @@ export default function MathPage() {
             title: 'Subtraction',
             description: 'Practice your subtraction skills!',
             bgColor: 'bg-green-500',
+            textColor: 'text-green-500',
             hoverBgColor: 'hover:bg-green-600'
         },
         {
@@ -58,6 +61,7 @@ export default function MathPage() {
             title: 'Division',
             description: 'Practice your division skills!',
             bgColor: 'bg-yellow-500',
+            textColor: 'text-yellow-500',
             hoverBgColor: 'hover:bg-yellow-600'
         }
     ];
@@ -81,7 +85,7 @@ export default function MathPage() {
                                     <p className="mb-4">{game.description}</p>
                                     <div className="space-y-3">
                                         <button 
-                                            className={`px-6 py-3 bg-white text-${game.bgColor.split('-')[1]}-600 font-semibold rounded-full hover:bg-opacity-90 transition-colors w-full cursor-pointer`}
+                                            className={`px-6 py-3 bg-white ${game.textColor} font-semibold rounded-full hover:bg-opacity-90 transition-colors w-full cursor-pointer`}
                                             onClick={() => startGame(game.type)}
                                         >
                                             Play Now
