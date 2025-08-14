@@ -135,19 +135,22 @@ export const useMathGame = ({ gameType, onGameOver, customConfig }: UseMathGameP
     setAnswers(generateAnswers(num1, num2, currentScore));
     setTimeLeft(10);
     setShowCorrect(false);
+    // Reduce blinking duration and make it less aggressive
     setIsBlinking(true);
-    setTimeout(() => setIsBlinking(false), 300);
+    setTimeout(() => setIsBlinking(false), 150); // Reduced from 300ms to 150ms
   }, [generateAnswers, config, gameType, score, customConfig]);
 
   const handleCorrectAnswer = useCallback(() => {
+    // Award points based on remaining time (rounded to nearest integer)
+    const pointsEarned = Math.round(timeLeft);
+    setPoints(prev => prev + pointsEarned);
+    
     setScore(prev => {
       const newScore = prev + 1;
-      // Generate new problem with updated score
-      generateNewProblem(newScore);
+      // Use a small delay to ensure state updates are processed smoothly
+      setTimeout(() => generateNewProblem(newScore), 50);
       return newScore;
     });
-    // Award points based on remaining time (rounded to nearest integer)
-    setPoints(prev => prev + Math.round(timeLeft));
   }, [generateNewProblem, timeLeft]);
 
   const handleIncorrectAnswer = useCallback(() => {
@@ -163,11 +166,8 @@ export const useMathGame = ({ gameType, onGameOver, customConfig }: UseMathGameP
       } else {
         // Continue game with new problem after showing correct answer
         setTimeout(() => {
-          setScore(currentScore => {
-            generateNewProblem(currentScore);
-            return currentScore;
-          });
           setIsShaking(false);
+          generateNewProblem(score); // Use current score instead of state callback
         }, 1500);
       }
       return newLives;

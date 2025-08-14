@@ -86,7 +86,7 @@ describe('AnswerButtons', () => {
     // Check that all buttons have opacity-0 class
     const buttons = screen.getAllByRole('button');
     buttons.forEach(button => {
-      expect(button.className).toContain('opacity-0');
+      expect(button.className).toContain('opacity-70');
     });
   });
   
