@@ -145,20 +145,24 @@ const FALLBACK_OFFSET = 6;
 export interface CustomMultiplicationConfig {
   tables: number[]; // e.g., [2, 3, 5] for 2s, 3s, and 5s tables
   multiplierRange?: { min: number; max: number }; // Range for second number, defaults to 1-10
+  numAnswers?: number; // Number of answer choices (2-4), defaults to score-based progression
 }
 
 export interface CustomAdditionConfig {
   range: DifficultyRange; // Range for both numbers
+  numAnswers?: number; // Number of answer choices (2-4), defaults to score-based progression
 }
 
 export interface CustomSubtractionConfig {
   range: DifficultyRange; // Range for both numbers
   allowNegative: boolean; // Whether to allow negative results
+  numAnswers?: number; // Number of answer choices (2-4), defaults to score-based progression
 }
 
 export interface CustomDivisionConfig {
   dividendRange: DifficultyRange; // Range for dividend (first number)
   divisorRange: DifficultyRange; // Range for divisor (second number)
+  numAnswers?: number; // Number of answer choices (2-4), defaults to score-based progression
 }
 
 export type CustomGameConfig = {

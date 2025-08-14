@@ -29,6 +29,9 @@ export default function CustomGameModal({ isOpen, onClose, gameType }: CustomGam
   const [divisionDivisorMin, setDivisionDivisorMin] = useState<number>(1);
   const [divisionDivisorMax, setDivisionDivisorMax] = useState<number>(10);
 
+  // Number of answers configuration (shared for all game types)
+  const [numAnswers, setNumAnswers] = useState<number>(2);
+
   if (!isOpen) return null;
 
   const parseTablesInput = (input: string): number[] => {
@@ -63,7 +66,8 @@ export default function CustomGameModal({ isOpen, onClose, gameType }: CustomGam
         }
         customConfig[GameType.MULTIPLICATION] = {
           tables,
-          multiplierRange: { min: multiplicationMultiplierMin, max: multiplicationMultiplierMax }
+          multiplierRange: { min: multiplicationMultiplierMin, max: multiplicationMultiplierMax },
+          numAnswers
         };
         break;
       
@@ -73,7 +77,8 @@ export default function CustomGameModal({ isOpen, onClose, gameType }: CustomGam
           return;
         }
         customConfig[GameType.ADDITION] = {
-          range: { min: additionMin, max: additionMax }
+          range: { min: additionMin, max: additionMax },
+          numAnswers
         };
         break;
       
@@ -84,7 +89,8 @@ export default function CustomGameModal({ isOpen, onClose, gameType }: CustomGam
         }
         customConfig[GameType.SUBTRACTION] = {
           range: { min: subtractionMin, max: subtractionMax },
-          allowNegative: subtractionAllowNegative
+          allowNegative: subtractionAllowNegative,
+          numAnswers
         };
         break;
       
@@ -95,7 +101,8 @@ export default function CustomGameModal({ isOpen, onClose, gameType }: CustomGam
         }
         customConfig[GameType.DIVISION] = {
           dividendRange: { min: divisionDividendMin, max: divisionDividendMax },
-          divisorRange: { min: divisionDivisorMin, max: divisionDivisorMax }
+          divisorRange: { min: divisionDivisorMin, max: divisionDivisorMax },
+          numAnswers
         };
         break;
     }
@@ -317,6 +324,25 @@ export default function CustomGameModal({ isOpen, onClose, gameType }: CustomGam
           {gameType === GameType.ADDITION && renderAdditionConfig()}
           {gameType === GameType.SUBTRACTION && renderSubtractionConfig()}
           {gameType === GameType.DIVISION && renderDivisionConfig()}
+
+          {/* Number of answers selection */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Number of Answer Choices:
+            </label>
+            <select
+              value={numAnswers}
+              onChange={(e) => setNumAnswers(parseInt(e.target.value))}
+              className="w-full p-2 border border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+            >
+              <option value={2}>2 choices</option>
+              <option value={3}>3 choices</option>
+              <option value={4}>4 choices</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              Choose how many answer buttons to display for each question
+            </p>
+          </div>
 
           <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-600">
             <button

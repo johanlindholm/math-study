@@ -35,7 +35,15 @@ export const useMathGame = ({ gameType, onGameOver, customConfig }: UseMathGameP
 
   const generateAnswers = useCallback((num1: number, num2: number, currentScore: number) => {
     const correctResult = config.operation(num1, num2);
-    const numAnswers = Math.min(2 + Math.floor(currentScore / 5), 4);
+    
+    // Use custom numAnswers if provided, otherwise use score-based progression
+    let numAnswers: number;
+    if (customConfig && customConfig[gameType] && 'numAnswers' in customConfig[gameType]!) {
+      const customNumAnswers = (customConfig[gameType] as any).numAnswers;
+      numAnswers = Math.max(2, Math.min(4, customNumAnswers || 2)); // Clamp between 2-4
+    } else {
+      numAnswers = Math.min(2 + Math.floor(currentScore / 5), 4);
+    }
 
     const answers: Answer[] = [
       { value: correctResult, isCorrect: true }
@@ -52,7 +60,7 @@ export const useMathGame = ({ gameType, onGameOver, customConfig }: UseMathGameP
 
     // Shuffle the answers
     return answers.sort(() => Math.random() - 0.5);
-  }, [generateIncorrectResult, config]);
+  }, [generateIncorrectResult, config, customConfig, gameType]);
 
   const generateNewProblem = useCallback((currentScore: number = score) => {
     let difficulty: any;
@@ -126,8 +134,8 @@ export const useMathGame = ({ gameType, onGameOver, customConfig }: UseMathGameP
     setResult(config.operation(num1, num2));
     setAnswers(generateAnswers(num1, num2, currentScore));
     setTimeLeft(10);
-    setIsBlinking(true);
     setShowCorrect(false);
+    setIsBlinking(true);
     setTimeout(() => setIsBlinking(false), 300);
   }, [generateAnswers, config, gameType, score, customConfig]);
 
