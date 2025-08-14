@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import AnswerButtons from '../components/AnswerButtons';
 import LeaderboardModal from '../components/LeaderboardModal';
 import { useMathGame } from './useMathGame';
-import { GameType } from './types';
+import { GameType, CustomGameConfig } from './types';
 import { useTranslations } from 'next-intl';
 
 const Confetti = dynamic(() => import('react-confetti'), {
@@ -57,6 +57,18 @@ export default function GameContent() {
   const searchParams = useSearchParams();
   const gameType = (searchParams.get('type') as GameType) || GameType.MULTIPLICATION;
   const { data: session } = useSession();
+  
+  // Parse custom config from URL if present
+  const customConfigParam = searchParams.get('custom');
+  let customConfig: Partial<CustomGameConfig> | undefined;
+  try {
+    if (customConfigParam) {
+      customConfig = JSON.parse(decodeURIComponent(customConfigParam));
+    }
+  } catch (error) {
+    console.error('Error parsing custom config:', error);
+    customConfig = undefined;
+  }
   
   const [showConfetti, setShowConfetti] = useState(false);
   const [confettiPosition, setConfettiPosition] = useState({ x: 0, y: 0 });
@@ -120,6 +132,7 @@ export default function GameContent() {
   } = useMathGame({
     gameType,
     onGameOver: handleGameOver,
+    customConfig,
   });
 
   // Track level changes and trigger confetti on level up
@@ -320,7 +333,10 @@ export default function GameContent() {
           />
         </div>
       </div>
-      <h1 className="text-4xl font-bold mb-4">{gameTypeMap[gameType]} {t('gameTypes.game')}</h1>
+      <h1 className="text-4xl font-bold mb-4">
+        {gameTypeMap[gameType]} {t('gameTypes.game')}
+        {customConfig && <span className="text-lg text-blue-500 ml-2">(Custom)</span>}
+      </h1>
       <p className={`mb-4 transition-opacity duration-300 ${isBlinking ? 'opacity-0' : 'opacity-100'} text-4xl`}>
         {numberOne} {symbol} {numberTwo}
       </p>

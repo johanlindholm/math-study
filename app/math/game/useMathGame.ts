@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { GameType, GAME_CONFIGS, getCurrentLevel, getDifficultyForLevel } from './types';
+import { GameType, GAME_CONFIGS, getCurrentLevel, getDifficultyForLevel, CustomGameConfig } from './types';
 
 export interface Answer {
   value: number;
@@ -9,9 +9,10 @@ export interface Answer {
 interface UseMathGameProps {
   gameType: GameType;
   onGameOver: (score: number, points: number) => void;
+  customConfig?: Partial<CustomGameConfig>;
 }
 
-export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
+export const useMathGame = ({ gameType, onGameOver, customConfig }: UseMathGameProps) => {
   const [numberOne, setNumberOne] = useState(0);
   const [numberTwo, setNumberTwo] = useState(0);
   const [result, setResult] = useState(0);
@@ -54,20 +55,28 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
   }, [generateIncorrectResult, config]);
 
   const generateNewProblem = useCallback((currentScore: number = score) => {
-    const currentLevel = getCurrentLevel(currentScore);
-    const difficulty = getDifficultyForLevel(currentLevel, gameType);
+    let difficulty: any;
+    
+    // Use custom config if provided, otherwise use level-based difficulty
+    if (customConfig && customConfig[gameType]) {
+      difficulty = customConfig[gameType];
+    } else {
+      const currentLevel = getCurrentLevel(currentScore);
+      difficulty = getDifficultyForLevel(currentLevel, gameType);
+    }
     
     let num1 = 0;
     let num2 = 0;
     
     switch (gameType) {
       case GameType.MULTIPLICATION: {
-        const multiDifficulty = difficulty as { tables: number[] };
+        const multiDifficulty = difficulty as { tables: number[]; multiplierRange?: { min: number; max: number } };
         // Pick a random table from available ones
         const table = multiDifficulty.tables[Math.floor(Math.random() * multiDifficulty.tables.length)];
         num1 = table;
-        // For multiplication, num2 is between 1 and 10
-        num2 = Math.floor(Math.random() * 10) + 1;
+        // Use custom multiplier range if provided, otherwise default to 1-10
+        const range = multiDifficulty.multiplierRange || { min: 1, max: 10 };
+        num2 = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
         break;
       }
       
@@ -120,7 +129,7 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
     setIsBlinking(true);
     setShowCorrect(false);
     setTimeout(() => setIsBlinking(false), 300);
-  }, [generateAnswers, config, gameType, score]);
+  }, [generateAnswers, config, gameType, score, customConfig]);
 
   const handleCorrectAnswer = useCallback(() => {
     setScore(prev => {
@@ -185,9 +194,9 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
   useEffect(() => {
     generateNewProblem(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [customConfig]); // Add customConfig as dependency
 
-  const level = getCurrentLevel(score);
+  const level = customConfig ? 1 : getCurrentLevel(score); // Custom games stay at level 1
 
   return {
     numberOne,

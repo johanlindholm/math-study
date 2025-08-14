@@ -141,6 +141,33 @@ type GameConfig = {
 // Constant for fallback offset when all other offsets are taken
 const FALLBACK_OFFSET = 6;
 
+// Custom game configuration types
+export interface CustomMultiplicationConfig {
+  tables: number[]; // e.g., [2, 3, 5] for 2s, 3s, and 5s tables
+  multiplierRange?: { min: number; max: number }; // Range for second number, defaults to 1-10
+}
+
+export interface CustomAdditionConfig {
+  range: DifficultyRange; // Range for both numbers
+}
+
+export interface CustomSubtractionConfig {
+  range: DifficultyRange; // Range for both numbers
+  allowNegative: boolean; // Whether to allow negative results
+}
+
+export interface CustomDivisionConfig {
+  dividendRange: DifficultyRange; // Range for dividend (first number)
+  divisorRange: DifficultyRange; // Range for divisor (second number)
+}
+
+export type CustomGameConfig = {
+  [GameType.MULTIPLICATION]: CustomMultiplicationConfig;
+  [GameType.ADDITION]: CustomAdditionConfig;
+  [GameType.SUBTRACTION]: CustomSubtractionConfig;
+  [GameType.DIVISION]: CustomDivisionConfig;
+};
+
 export const GAME_CONFIGS: Record<GameType, GameConfig> = {
   [GameType.MULTIPLICATION]: {
     operation: (a, b) => a * b,
