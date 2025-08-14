@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -58,17 +58,20 @@ export default function GameContent() {
   const gameType = (searchParams.get('type') as GameType) || GameType.MULTIPLICATION;
   const { data: session } = useSession();
   
-  // Parse custom config from URL if present
-  const customConfigParam = searchParams.get('custom');
-  let customConfig: Partial<CustomGameConfig> | undefined;
-  try {
-    if (customConfigParam) {
-      customConfig = JSON.parse(decodeURIComponent(customConfigParam));
+  // Parse custom config from URL if present (memoize to prevent re-parsing on every render)
+  const customConfig = useMemo(() => {
+    const customConfigParam = searchParams.get('custom');
+    if (!customConfigParam) {
+      return undefined;
     }
-  } catch (error) {
-    console.error('Error parsing custom config:', error);
-    customConfig = undefined;
-  }
+    
+    try {
+      return JSON.parse(decodeURIComponent(customConfigParam)) as Partial<CustomGameConfig>;
+    } catch (error) {
+      console.error('Error parsing custom config:', error);
+      return undefined;
+    }
+  }, [searchParams]);
   
   const [showConfetti, setShowConfetti] = useState(false);
   const [confettiPosition, setConfettiPosition] = useState({ x: 0, y: 0 });
