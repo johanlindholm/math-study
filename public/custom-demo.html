@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Game Mode - Math Study App</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            margin: 0; 
+            padding: 20px; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
+            background: #f5f5f5;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 2rem;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 18px;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .game-card { 
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .game-card:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .game-card.multiplication { border-top: 4px solid #8b5cf6; }
+        .game-card.addition { border-top: 4px solid #3b82f6; }
+        .game-card.subtraction { border-top: 4px solid #10b981; }
+        .game-card.division { border-top: 4px solid #f59e0b; }
+        .game-card h3 { 
+            margin: 0 0 1rem 0;
+            font-size: 24px;
+        }
+        .game-card p { 
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        .button {
+            background: white;
+            color: #333;
+            padding: 12px 24px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 0.25rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-block;
+            text-decoration: none;
+            width: 100%;
+        }
+        .button:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+        .button.primary {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .button.primary:hover {
+            background: #0056b3;
+            border-color: #004085;
+        }
+        .button.custom {
+            background: transparent;
+            color: #6c757d;
+            border-color: #6c757d;
+        }
+        .button.custom:hover {
+            background: #6c757d;
+            color: white;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal h2 {
+            margin: 0 0 1.5rem 0;
+            color: #333;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group small {
+            display: block;
+            margin-top: 0.25rem;
+            color: #666;
+            font-size: 12px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        .modal-buttons .button {
+            width: auto;
+            flex: 1;
+        }
+        .features {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .features h2 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .features ul {
+            color: #666;
+            line-height: 1.6;
+        }
+        .features ul li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Math Games</h1>
+        <p class="subtitle">Select a game mode to start practicing!</p>
+        
+        <div class="games-grid">
+            <div class="game-card multiplication">
+                <h3>Multiplication</h3>
+                <p>Practice your multiplication skills!</p>
+                <button class="button primary" onclick="alert('Starting regular Multiplication game')">Play Now</button>
+                <button class="button custom" onclick="openModal('multiplication')">Custom Mode</button>
+                <button class="button" onclick="alert('View High Scores for Multiplication')">View High Scores</button>
+            </div>
+            
+            <div class="game-card addition">
+                <h3>Addition</h3>
+                <p>Practice your addition skills!</p>
+                <button class="button primary" onclick="alert('Starting regular Addition game')">Play Now</button>
+                <button class="button custom" onclick="openModal('addition')">Custom Mode</button>
+                <button class="button" onclick="alert('View High Scores for Addition')">View High Scores</button>
+            </div>
+            
+            <div class="game-card subtraction">
+                <h3>Subtraction</h3>
+                <p>Practice your subtraction skills!</p>
+                <button class="button primary" onclick="alert('Starting regular Subtraction game')">Play Now</button>
+                <button class="button custom" onclick="openModal('subtraction')">Custom Mode</button>
+                <button class="button" onclick="alert('View High Scores for Subtraction')">View High Scores</button>
+            </div>
+            
+            <div class="game-card division">
+                <h3>Division</h3>
+                <p>Practice your division skills!</p>
+                <button class="button primary" onclick="alert('Starting regular Division game')">Play Now</button>
+                <button class="button custom" onclick="openModal('division')">Custom Mode</button>
+                <button class="button" onclick="alert('View High Scores for Division')">View High Scores</button>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>🎯 New Custom Mode Features</h2>
+            <ul>
+                <li><strong>Multiplication:</strong> Choose specific tables (e.g., "2,4,6" or "2-10") and multiplier ranges</li>
+                <li><strong>Addition:</strong> Set custom number ranges for both operands</li>
+                <li><strong>Subtraction:</strong> Configure ranges and allow/disallow negative results</li>
+                <li><strong>Division:</strong> Set dividend and divisor ranges for targeted practice</li>
+                <li><strong>Static Difficulty:</strong> Custom games don't increase in difficulty - perfect for focused practice!</li>
+                <li><strong>Visual Indication:</strong> Custom games show "(Custom)" label during play</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Multiplication Modal -->
+    <div id="multiplicationModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2>Custom Multiplication Game</h2>
+            
+            <div class="form-group">
+                <label>Multiplication Tables (e.g., "1,2,3" or "2-10"):</label>
+                <input type="text" id="multiTables" value="1,2,3,4,5" placeholder="1,2,3 or 2-10">
+                <small>Examples: "2" (just 2s table), "1,3,5" (1s, 3s, 5s tables), "2-8" (2s through 8s tables)</small>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Multiplier Min:</label>
+                    <input type="number" id="multiMin" value="1" min="1" max="20">
+                </div>
+                <div class="form-group">
+                    <label>Multiplier Max:</label>
+                    <input type="number" id="multiMax" value="10" min="1" max="20">
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="button primary" onclick="startCustomGame('multiplication')">Start Custom Game</button>
+                <button class="button" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Addition Modal -->
+    <div id="additionModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2>Custom Addition Game</h2>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Number Range Min:</label>
+                    <input type="number" id="addMin" value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Number Range Max:</label>
+                    <input type="number" id="addMax" value="20" min="1">
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="button primary" onclick="startCustomGame('addition')">Start Custom Game</button>
+                <button class="button" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subtraction Modal -->
+    <div id="subtractionModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2>Custom Subtraction Game</h2>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Number Range Min:</label>
+                    <input type="number" id="subMin" value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Number Range Max:</label>
+                    <input type="number" id="subMax" value="20" min="1">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="allowNegative">
+                    <label for="allowNegative">Allow negative results</label>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="button primary" onclick="startCustomGame('subtraction')">Start Custom Game</button>
+                <button class="button" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Division Modal -->
+    <div id="divisionModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2>Custom Division Game</h2>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Dividend Min:</label>
+                    <input type="number" id="divDividendMin" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Dividend Max:</label>
+                    <input type="number" id="divDividendMax" value="100" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Divisor Min:</label>
+                    <input type="number" id="divDivisorMin" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Divisor Max:</label>
+                    <input type="number" id="divDivisorMax" value="10" min="1">
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="button primary" onclick="startCustomGame('division')">Start Custom Game</button>
+                <button class="button" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(gameType) {
+            document.getElementById(gameType + 'Modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        function startCustomGame(gameType) {
+            let config = {};
+            
+            switch(gameType) {
+                case 'multiplication':
+                    const tables = document.getElementById('multiTables').value;
+                    const multiMin = document.getElementById('multiMin').value;
+                    const multiMax = document.getElementById('multiMax').value;
+                    config = {
+                        tables: tables.includes('-') && !tables.includes(',') 
+                            ? `Range ${tables}`
+                            : `Tables [${tables}]`,
+                        multiplierRange: `${multiMin}-${multiMax}`
+                    };
+                    break;
+                case 'addition':
+                    const addMin = document.getElementById('addMin').value;
+                    const addMax = document.getElementById('addMax').value;
+                    config = { range: `${addMin}-${addMax}` };
+                    break;
+                case 'subtraction':
+                    const subMin = document.getElementById('subMin').value;
+                    const subMax = document.getElementById('subMax').value;
+                    const allowNegative = document.getElementById('allowNegative').checked;
+                    config = { range: `${subMin}-${subMax}`, allowNegative };
+                    break;
+                case 'division':
+                    const divDividendMin = document.getElementById('divDividendMin').value;
+                    const divDividendMax = document.getElementById('divDividendMax').value;
+                    const divDivisorMin = document.getElementById('divDivisorMin').value;
+                    const divDivisorMax = document.getElementById('divDivisorMax').value;
+                    config = { 
+                        dividend: `${divDividendMin}-${divDividendMax}`,
+                        divisor: `${divDivisorMin}-${divDivisorMax}`
+                    };
+                    break;
+            }
+            
+            alert(`Starting Custom ${gameType} game!\n\nConfiguration:\n${JSON.stringify(config, null, 2)}\n\nThis would navigate to:\n/math/game?type=${gameType}&custom=[encoded-config]`);
+            closeModal();
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { GameType, GAME_CONFIGS, getCurrentLevel, getDifficultyForLevel } from './types';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { GameType, GAME_CONFIGS, getCurrentLevel, getDifficultyForLevel, CustomGameConfig } from './types';
 
 export interface Answer {
   value: number;
@@ -9,9 +9,10 @@ export interface Answer {
 interface UseMathGameProps {
   gameType: GameType;
   onGameOver: (score: number, points: number) => void;
+  customConfig?: Partial<CustomGameConfig>;
 }
 
-export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
+export const useMathGame = ({ gameType, onGameOver, customConfig }: UseMathGameProps) => {
   const [numberOne, setNumberOne] = useState(0);
   const [numberTwo, setNumberTwo] = useState(0);
   const [result, setResult] = useState(0);
@@ -25,6 +26,10 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
   const [lives, setLives] = useState(3);
   const [showCorrect, setShowCorrect] = useState(false);
 
+  // Store customConfig in a ref to avoid dependency issues while keeping it fresh
+  const customConfigRef = useRef(customConfig);
+  customConfigRef.current = customConfig;
+
   const config = GAME_CONFIGS[gameType];
 
   const generateIncorrectResult = useCallback((num1: number, num2: number, existingResults: number[] = []) => {
@@ -34,7 +39,16 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
 
   const generateAnswers = useCallback((num1: number, num2: number, currentScore: number) => {
     const correctResult = config.operation(num1, num2);
-    const numAnswers = Math.min(2 + Math.floor(currentScore / 5), 4);
+    
+    // Use custom numAnswers if provided, otherwise use score-based progression
+    let numAnswers: number;
+    const currentCustomConfig = customConfigRef.current;
+    if (currentCustomConfig && currentCustomConfig[gameType] && 'numAnswers' in currentCustomConfig[gameType]!) {
+      const customNumAnswers = (currentCustomConfig[gameType] as any).numAnswers;
+      numAnswers = Math.max(2, Math.min(4, customNumAnswers || 2)); // Clamp between 2-4
+    } else {
+      numAnswers = Math.min(2 + Math.floor(currentScore / 5), 4);
+    }
 
     const answers: Answer[] = [
       { value: correctResult, isCorrect: true }
@@ -51,23 +65,32 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
 
     // Shuffle the answers
     return answers.sort(() => Math.random() - 0.5);
-  }, [generateIncorrectResult, config]);
+  }, [generateIncorrectResult, config, gameType]); // Remove customConfig from dependencies
 
   const generateNewProblem = useCallback((currentScore: number = score) => {
-    const currentLevel = getCurrentLevel(currentScore);
-    const difficulty = getDifficultyForLevel(currentLevel, gameType);
+    let difficulty: any;
+    
+    // Use custom config if provided, otherwise use level-based difficulty
+    const currentCustomConfig = customConfigRef.current;
+    if (currentCustomConfig && currentCustomConfig[gameType]) {
+      difficulty = currentCustomConfig[gameType];
+    } else {
+      const currentLevel = getCurrentLevel(currentScore);
+      difficulty = getDifficultyForLevel(currentLevel, gameType);
+    }
     
     let num1 = 0;
     let num2 = 0;
     
     switch (gameType) {
       case GameType.MULTIPLICATION: {
-        const multiDifficulty = difficulty as { tables: number[] };
+        const multiDifficulty = difficulty as { tables: number[]; multiplierRange?: { min: number; max: number } };
         // Pick a random table from available ones
         const table = multiDifficulty.tables[Math.floor(Math.random() * multiDifficulty.tables.length)];
         num1 = table;
-        // For multiplication, num2 is between 1 and 10
-        num2 = Math.floor(Math.random() * 10) + 1;
+        // Use custom multiplier range if provided, otherwise default to 1-10
+        const range = multiDifficulty.multiplierRange || { min: 1, max: 10 };
+        num2 = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
         break;
       }
       
@@ -117,20 +140,23 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
     setResult(config.operation(num1, num2));
     setAnswers(generateAnswers(num1, num2, currentScore));
     setTimeLeft(10);
-    setIsBlinking(true);
     setShowCorrect(false);
-    setTimeout(() => setIsBlinking(false), 300);
-  }, [generateAnswers, config, gameType, score]);
+    // Reduce blinking duration and make it less aggressive
+    setIsBlinking(true);
+    setTimeout(() => setIsBlinking(false), 150); // Reduced from 300ms to 150ms
+  }, [generateAnswers, config, gameType, score]); // Remove customConfig from dependencies
 
   const handleCorrectAnswer = useCallback(() => {
+    // Award points based on remaining time (rounded to nearest integer)
+    const pointsEarned = Math.round(timeLeft);
+    setPoints(prev => prev + pointsEarned);
+    
     setScore(prev => {
       const newScore = prev + 1;
-      // Generate new problem with updated score
-      generateNewProblem(newScore);
+      // Use a small delay to ensure state updates are processed smoothly
+      setTimeout(() => generateNewProblem(newScore), 50);
       return newScore;
     });
-    // Award points based on remaining time (rounded to nearest integer)
-    setPoints(prev => prev + Math.round(timeLeft));
   }, [generateNewProblem, timeLeft]);
 
   const handleIncorrectAnswer = useCallback(() => {
@@ -146,11 +172,8 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
       } else {
         // Continue game with new problem after showing correct answer
         setTimeout(() => {
-          setScore(currentScore => {
-            generateNewProblem(currentScore);
-            return currentScore;
-          });
           setIsShaking(false);
+          generateNewProblem(score); // Use current score instead of state callback
         }, 1500);
       }
       return newLives;
@@ -181,13 +204,13 @@ export const useMathGame = ({ gameType, onGameOver }: UseMathGameProps) => {
     }
   }, [timeLeft, gameOver, handleIncorrectAnswer]);
 
-  // Initialize game
+  // Initialize game (only once)
   useEffect(() => {
     generateNewProblem(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, []); // Empty dependency array - only run once on mount
 
-  const level = getCurrentLevel(score);
+  const level = customConfigRef.current ? 1 : getCurrentLevel(score); // Custom games stay at level 1
 
   return {
     numberOne,

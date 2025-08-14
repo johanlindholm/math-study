@@ -4,11 +4,16 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { GameType } from './game/types';
 import HighScoreModal from './components/HighScoreModal';
+import CustomGameModal from './components/CustomGameModal';
 
 export default function MathPage() {
     const router = useRouter();
     const { data: session, status } = useSession();
     const [highScoreModal, setHighScoreModal] = useState<{isOpen: boolean, gameType: GameType | null}>({
+        isOpen: false,
+        gameType: null
+    });
+    const [customGameModal, setCustomGameModal] = useState<{isOpen: boolean, gameType: GameType | null}>({
         isOpen: false,
         gameType: null
     });
@@ -29,6 +34,14 @@ export default function MathPage() {
 
     const closeHighScores = () => {
         setHighScoreModal({ isOpen: false, gameType: null });
+    };
+
+    const openCustomGame = (gameType: GameType) => {
+        setCustomGameModal({ isOpen: true, gameType });
+    };
+
+    const closeCustomGame = () => {
+        setCustomGameModal({ isOpen: false, gameType: null });
     };
 
     const gameModes = [
@@ -92,6 +105,12 @@ export default function MathPage() {
                                         </button>
                                         <button 
                                             className="px-6 py-2 bg-black/20 hover:bg-black/40 text-white font-medium rounded-full transition-all w-full border-2 border-white/80 hover:border-white shadow-md cursor-pointer"
+                                            onClick={() => openCustomGame(game.type)}
+                                        >
+                                            Custom Mode
+                                        </button>
+                                        <button 
+                                            className="px-6 py-2 bg-black/20 hover:bg-black/40 text-white font-medium rounded-full transition-all w-full border-2 border-white/80 hover:border-white shadow-md cursor-pointer"
                                             onClick={() => openHighScores(game.type)}
                                         >
                                             View High Scores
@@ -109,6 +128,15 @@ export default function MathPage() {
                             onClose={closeHighScores}
                             gameType={highScoreModal.gameType}
                             userId={session?.user?.id}
+                        />
+                    )}
+
+                    {/* Custom Game Modal */}
+                    {customGameModal.gameType && (
+                        <CustomGameModal 
+                            isOpen={customGameModal.isOpen}
+                            onClose={closeCustomGame}
+                            gameType={customGameModal.gameType}
                         />
                     )}
                 </>

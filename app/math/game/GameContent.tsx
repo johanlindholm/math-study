@@ -1,12 +1,12 @@
 "use client";
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import AnswerButtons from '../components/AnswerButtons';
 import LeaderboardModal from '../components/LeaderboardModal';
 import { useMathGame } from './useMathGame';
-import { GameType } from './types';
+import { GameType, CustomGameConfig } from './types';
 import { useTranslations } from 'next-intl';
 
 const Confetti = dynamic(() => import('react-confetti'), {
@@ -57,6 +57,21 @@ export default function GameContent() {
   const searchParams = useSearchParams();
   const gameType = (searchParams.get('type') as GameType) || GameType.MULTIPLICATION;
   const { data: session } = useSession();
+  
+  // Parse custom config from URL if present (memoize to prevent re-parsing on every render)
+  const customConfig = useMemo(() => {
+    const customConfigParam = searchParams.get('custom');
+    if (!customConfigParam) {
+      return undefined;
+    }
+    
+    try {
+      return JSON.parse(decodeURIComponent(customConfigParam)) as Partial<CustomGameConfig>;
+    } catch (error) {
+      console.error('Error parsing custom config:', error);
+      return undefined;
+    }
+  }, [searchParams]);
   
   const [showConfetti, setShowConfetti] = useState(false);
   const [confettiPosition, setConfettiPosition] = useState({ x: 0, y: 0 });
@@ -120,6 +135,7 @@ export default function GameContent() {
   } = useMathGame({
     gameType,
     onGameOver: handleGameOver,
+    customConfig,
   });
 
   // Track level changes and trigger confetti on level up
@@ -320,7 +336,10 @@ export default function GameContent() {
           />
         </div>
       </div>
-      <h1 className="text-4xl font-bold mb-4">{gameTypeMap[gameType]} {t('gameTypes.game')}</h1>
+      <h1 className="text-4xl font-bold mb-4">
+        {gameTypeMap[gameType]} {t('gameTypes.game')}
+        {customConfig && <span className="text-lg text-blue-500 ml-2">(Custom)</span>}
+      </h1>
       <p className={`mb-4 transition-opacity duration-300 ${isBlinking ? 'opacity-0' : 'opacity-100'} text-4xl`}>
         {numberOne} {symbol} {numberTwo}
       </p>

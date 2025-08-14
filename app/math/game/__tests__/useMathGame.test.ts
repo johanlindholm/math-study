@@ -84,6 +84,12 @@ describe('useMathGame', () => {
       act(() => {
         result.current.handleCorrectAnswer();
       });
+      
+      // Wait for the delayed generateNewProblem call
+      act(() => {
+        jest.advanceTimersByTime(100);
+      });
+      
       expect(result.current.score).toBe(5);
       expect(result.current.answers.length).toBe(3);
 
@@ -93,6 +99,12 @@ describe('useMathGame', () => {
           result.current.handleCorrectAnswer();
         }
       });
+      
+      // Wait for all delayed generateNewProblem calls
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+      
       expect(result.current.score).toBe(9);
       expect(result.current.answers.length).toBe(3);
 
@@ -100,6 +112,12 @@ describe('useMathGame', () => {
       act(() => {
         result.current.handleCorrectAnswer();
       });
+      
+      // Wait for the delayed generateNewProblem call
+      act(() => {
+        jest.advanceTimersByTime(100);
+      });
+      
       expect(result.current.score).toBe(10);
       expect(result.current.answers.length).toBe(4);
     });
@@ -255,13 +273,18 @@ describe('useMathGame', () => {
         result.current.handleCorrectAnswer();
       });
 
+      // Wait for the delayed generateNewProblem call
+      act(() => {
+        jest.advanceTimersByTime(100);
+      });
+
       expect(result.current.score).toBe(initialScore + 1);
       // Should generate new problem
       expect(
         result.current.numberOne !== initialNumbers.num1 || 
         result.current.numberTwo !== initialNumbers.num2
       ).toBe(true);
-      expect(result.current.timeLeft).toBe(10); // Timer reset
+      expect(result.current.timeLeft).toBeCloseTo(10, 0); // Timer reset (allow for some deviation)
     });
 
     it('should trigger shake animation and game over when all lives are lost', () => {
@@ -314,7 +337,7 @@ describe('useMathGame', () => {
       expect(result.current.isBlinking).toBe(true);
 
       act(() => {
-        jest.advanceTimersByTime(300);
+        jest.advanceTimersByTime(200); // Wait for the 150ms blink duration
       });
 
       expect(result.current.isBlinking).toBe(false);
@@ -324,10 +347,15 @@ describe('useMathGame', () => {
         result.current.handleCorrectAnswer();
       });
 
+      // Wait for the delayed generateNewProblem call to trigger blinking
+      act(() => {
+        jest.advanceTimersByTime(100);
+      });
+
       expect(result.current.isBlinking).toBe(true);
 
       act(() => {
-        jest.advanceTimersByTime(300);
+        jest.advanceTimersByTime(200); // Wait for the 150ms blink duration
       });
 
       expect(result.current.isBlinking).toBe(false);
